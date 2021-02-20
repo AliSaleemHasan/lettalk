@@ -1,0 +1,45 @@
+/* message */
+.message {
+  margin-top: 10px;
+  display: flex;
+  width: fit-content;
+  max-width: 50vw;
+  word-wrap: break-word;
+}
+
+/* message left */
+.message__left {
+  margin: 0 6px;
+}
+
+/* message right */
+
+.message__right {
+  width: 70%;
+}
+
+.message__content {
+  padding: 10px 10px 10px 8px;
+  border-radius: 2px;
+  border-bottom-left-radius: 25px;
+  background: #fff;
+}
+
+.message__timestamp {
+  font-size: 12px;
+  margin-top: 2px;
+}
+/* message reciver */
+.message__r {
+  margin-left: auto;
+  flex-direction: row-reverse;
+}
+.message__r .message__content {
+  background: #82d9a0;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 25px;
+}
+
+.message__r .message__timestamp {
+  text-align: right;
+}

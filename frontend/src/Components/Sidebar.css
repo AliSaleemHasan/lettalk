@@ -1,0 +1,139 @@
+/* sidebar and settings */
+.sidebar,
+.settings {
+  height: 100%;
+  display: flex;
+  width: 300px;
+}
+
+/* sidebar */
+.sidebar {
+  animation: sidebarAnimation 0.5s;
+}
+
+/* sidebar__left */
+.sidebar__left {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 65px;
+  background-color: #2b3238;
+}
+
+.sidebar__left .MuiSvgIcon-root {
+  color: #aaa;
+}
+
+.sidebar__leftAvatar {
+  margin-top: 10px;
+}
+
+.sidebar__leftAvatar .MuiAvatar-root {
+  width: 60px;
+  height: 60px;
+}
+.sidebar__leftIcons {
+  margin-top: 40px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* sidebar__right */
+.sidebar__right {
+  flex: 1;
+  overflow-y: scroll;
+  background-color: #313940;
+}
+
+.sidebar__rightsearch {
+  padding-top: 10px;
+  position: sticky;
+  top: 0;
+  background-color: #313940;
+  z-index: 1;
+  border-bottom: 2px solid #2b3238;
+}
+
+.sidebar__rightsearch .MuiSvgIcon-root {
+  color: #aaa;
+}
+
+.sidebar__rightsearch form {
+  margin: 0 10px 10px;
+  display: flex;
+  height: 50px;
+  align-items: center;
+  border-radius: 20px;
+  background-color: #2b3238;
+}
+.sidebar__rightsearch input {
+  background-color: #2b3238;
+  outline: none;
+  border: none;
+  height: 90%;
+  width: 50%;
+  color: #fff;
+  padding-left: 4px;
+}
+
+.sidebar__rightsearch .MuiSvgIcon-root {
+  padding-left: 4px;
+}
+.sidebar__rightsearch button {
+  display: none;
+}
+
+/* settings */
+.settings {
+  animation: settingAnimation 1s;
+
+  flex-direction: column;
+  background-color: #2b3238;
+  color: #f0f2f2;
+}
+
+.settings__header {
+  margin: 0 auto;
+  font-size: 25px;
+  margin-top: 5px;
+}
+
+.settings .MuiAvatar-root {
+  width: 150px;
+  height: 150px;
+  margin: 20px auto;
+}
+
+.settings__settings {
+  flex: 1;
+}
+
+/* keyframes */
+
+@keyframes settingAnimation {
+  0% {
+    transform: translateY(1000px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes sidebarAnimation {
+  0% {
+    transform: translateX(-1000px);
+  }
+
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+@media (max-width: 786px) {
+  .settings,
+  .sidebar {
+    width: 100%;
+  }
+}

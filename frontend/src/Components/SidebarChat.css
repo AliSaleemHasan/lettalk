@@ -1,0 +1,49 @@
+/* sidebar chat */
+.sidebarChat {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  border-bottom: 2px solid #2b3238;
+}
+
+.sidebarChat:hover {
+  cursor: pointer;
+  background-color: #2b3238;
+}
+
+/* sidebarChat__left */
+
+.sidebarChat__left {
+  margin: 0 5px;
+}
+
+/* sidebarChat__right */
+.sidebarChat__right {
+  padding: 0 5px;
+  flex: 1;
+}
+.sidebarChat__info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebarChat__name {
+  margin-bottom: 5px;
+  font-family: sans-serif;
+  font-variant: small-caps;
+  font-weight: 500;
+  font-size: 16px;
+  color: #f0f2f2;
+}
+
+.sidebarChat__lastmessage {
+  color: #aaa;
+}
+
+.sidebarChat__count {
+  background-color: #59d986;
+  border-radius: 50%;
+  padding: 3px;
+  color: #f0f2f2;
+}

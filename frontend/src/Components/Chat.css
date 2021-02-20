@@ -1,0 +1,106 @@
+.chat {
+  flex: 1;
+  background-color: #f0f2f2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* chat header */
+
+.chat__header {
+  height: 50px;
+  padding: 10px;
+  border-bottom: 2px solid #2b3238;
+}
+
+.chat__header,
+.chat__headerStatus,
+.header__left {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chat__headerName {
+  color: #333;
+  font-size: 23px;
+  font-family: sans-serif;
+  font-variant: small-caps;
+}
+
+.chat__headerName:hover {
+  cursor: pointer;
+}
+.chat__headerStatus {
+  margin-left: 10px;
+}
+
+.status {
+  font-size: 12px;
+  color: #555;
+}
+
+.chat__status {
+  margin-right: 4px;
+  padding: 4px;
+  border-radius: 50%;
+  width: 1px;
+  height: 1px;
+  background-color: #82d9a0;
+}
+
+/* chat body */
+.chat__body {
+  flex: 1;
+  overflow-y: scroll;
+}
+
+/* chat footer */
+.chat__footer {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  height: 60px;
+}
+
+.chat__footer form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.chat__footer input {
+  height: 80%;
+  flex: 1;
+  border: none;
+  outline: none;
+}
+.chat__footer form .MuiSvgIcon-root {
+  color: #82d9a0;
+}
+
+/* chat__emoji */
+
+.emoji-picker-react {
+  width: 100% !important;
+  animation: emoji_animation 0.5s ease;
+  font-family: sans-serif;
+}
+
+@keyframes emoji_animation {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@media (max-width: 768px) {
+  .chat {
+    width: 100vw;
+  }
+}
