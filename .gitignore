@@ -1,1 +1,3 @@
 frontend/node_mdoules
+node_modules
+.env
