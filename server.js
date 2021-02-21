@@ -24,6 +24,16 @@ app.get("/", (req, res) => {
 });
 
 app.use("/users", userRouter);
+
+app.use((err, req, res) => {
+  let output = {
+    message: err.message,
+    name: err.name,
+    text: err.toString(),
+  };
+  let errStatus = err.status || 500;
+  res.status(errStatus).send(output);
+});
 app.listen(process.env.PORT, () => {
   console.log(`connected correctly to http://localhost:${process.env.PORT}`);
 });
