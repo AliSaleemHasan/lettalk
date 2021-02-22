@@ -18,6 +18,7 @@ const user = new Schema({
 
   state: {
     lastseen: Date,
+    default: "",
     status: {
       type: Boolean,
       default: false,
@@ -25,9 +26,11 @@ const user = new Schema({
   },
   image: {
     type: String,
+    default: "",
   },
   bio: {
     type: String,
+    default: "",
   },
 });
 
