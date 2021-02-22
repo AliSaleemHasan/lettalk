@@ -9,7 +9,7 @@ const user = new Schema({
   },
   username: {
     type: String,
-    default: email,
+    default: "ali",
   },
   password: {
     type: String,
@@ -31,4 +31,4 @@ const user = new Schema({
   },
 });
 
-module.exports = user;
+module.exports = mongoose.model("user", user);
