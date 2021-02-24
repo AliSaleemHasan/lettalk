@@ -11,6 +11,7 @@ function Info() {
   const history = useHistory();
   const returntoChat = (e) => {
     e.preventDefault();
+    console.log("fucking test");
     history.push("/chat/ali");
   };
   return (
