@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import "./Login.css";
-
+import { useStateValue } from "../StateProvider.js";
+import { ActionTypes } from "../reducer";
 function Login() {
+  const [{ user }, dispatch] = useStateValue();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const login = async (e) => {
@@ -14,7 +17,12 @@ function Login() {
       body: JSON.stringify({ email: email, password: password }),
     })
       .then((response) => response.json())
-      .then((data) => console.log(data));
+      .then((data) => {
+        dispatch({
+          type: ActionTypes.SET_USER,
+          user: data.user,
+        });
+      });
   };
   return (
     <div className="login">
