@@ -2,7 +2,7 @@ import React from "react";
 import "./AppSetting.css";
 import IconButton from "@material-ui/core/IconButton";
 import Edit from "@material-ui/icons/Edit";
-function Settings({ Icon, settingName }) {
+function Settings({ name, Icon, settingName }) {
   return (
     <div className="appSetting">
       <div className="appSetting__left">
@@ -10,7 +10,7 @@ function Settings({ Icon, settingName }) {
       </div>
       <div className="appSetting__right">
         <div className="appSetting__rightnow">
-          <p>Ali</p>
+          <p>{name}</p>
         </div>
         <div className="appSetting__rightname">
           <p>{settingName}</p>

@@ -10,11 +10,22 @@ import IconButton from "@material-ui/core/IconButton";
 import AppSetting from "./AppSetting.js";
 
 import Person from "@material-ui/icons/Person";
-
+import { useStateValue } from "../StateProvider.js";
+import { ActionTypes } from "../reducer";
 function Sidebar() {
+  const [{ user }, dispatch] = useStateValue();
+
+  const logout = (e) => {
+    e.preventDefault();
+    dispatch({
+      type: ActionTypes.SET_USER,
+      user: null,
+    });
+  };
   const [toggleSettings, setToggleSettings] = useState(false);
   const gotoSettings = (e) => {
     e.preventDefault();
+    console.log(user);
     setToggleSettings(true);
   };
 
@@ -30,11 +41,11 @@ function Sidebar() {
       </div>
 
       <div className="settings__setImage">
-        <Avatar />
+        <Avatar src={user.image} />
       </div>
       <div className="settings__settings">
-        <AppSetting Icon={Person} settingName="Name" />
-        <AppSetting Icon={Person} settingName="Bio" />
+        <AppSetting name={user.username} Icon={Person} settingName="Name" />
+        <AppSetting name={user.bio} Icon={Person} settingName="Bio" />
         <AppSetting Icon={Person} settingName="Username" />
       </div>
 
@@ -46,7 +57,7 @@ function Sidebar() {
     <div className="sidebar">
       <div className="sidebar__left">
         <div className="sidebar__leftAvatar">
-          <Avatar />
+          <Avatar src={user.image} />
         </div>
         <div className="sidebar__leftIcons">
           <IconButton>
@@ -58,7 +69,7 @@ function Sidebar() {
         </div>
 
         <div className="sidebar__leftLogout">
-          <IconButton>
+          <IconButton onClick={logout}>
             <ExitToAppIcon />
           </IconButton>
         </div>

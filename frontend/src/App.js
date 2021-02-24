@@ -6,10 +6,11 @@ import useWidth from "./Components/useWidth";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Info from "./Components/Info.js";
 import Login from "./Components/Login.js";
+import { useStateValue } from "./StateProvider.js";
 
 function App() {
   const width = useWidth();
-  const [user, setUser] = useState(null);
+  const [{ user }] = useStateValue();
   return width > 786 ? (
     <div className="app">
       {!user ? (
