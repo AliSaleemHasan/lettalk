@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
@@ -10,7 +9,7 @@ const userRouter = require("./routes/user_router");
 const port = 8080;
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
 let connection = mongoose.connect("mongodb://localhost:27017/chatApp", {
   useUnifiedTopology: true,
