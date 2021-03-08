@@ -2,20 +2,18 @@ import React, { useState } from "react";
 import "./Login.css";
 import { useStateValue } from "../StateProvider.js";
 import { ActionTypes } from "../reducer";
+import request from "../handleRequests.js";
 function Login() {
   const [{ user }, dispatch] = useStateValue();
-
+  const [signup, setSignup] = useState(false);
   const [email, setEmail] = useState("");
+  const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
-  const login = async (e) => {
+
+  const handleLogin = (e) => {
     e.preventDefault();
-    await fetch("/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: email, password: password }),
-    })
+    request
+      .login("/users/login", password, email)
       .then((response) => response.json())
       .then((data) => {
         dispatch({
@@ -24,14 +22,42 @@ function Login() {
         });
       });
   };
+
+  const handleSignup = (e) => {
+    e.preventDefault();
+    request
+      .signup("/users/signup", username, password, email)
+      .then((response) => response.json())
+      .then((data) => {
+        dispatch({
+          type: ActionTypes.SET_USER,
+          user: data.user,
+        });
+      });
+  };
+
+  const gotoSignup = (e) => {
+    e.preventDefault();
+    setSignup(!signup);
+  };
   return (
     <div className="login">
-      <form onSubmit={login}>
+      <form onSubmit={signup ? handleSignup : handleLogin}>
+        {signup && (
+          <input
+            value={username}
+            type="text"
+            placeholder="Enter Username.."
+            onChange={(e) => setusername(e.target.value)}
+            name="username"
+          />
+        )}
         <input
           value={email}
           type="email"
           placeholder="Enter Email.."
           onChange={(e) => setEmail(e.target.value)}
+          name="email"
         />
         <input
           value={password}
@@ -40,8 +66,12 @@ function Login() {
           name="password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Login</button>
+        <button type="submit">{signup ? "Signup" : "Login"}</button>
       </form>
+
+      <button onClick={gotoSignup}>
+        {!signup ? "Dont Have Account ! Signup" : "->"}
+      </button>
     </div>
   );
 }
