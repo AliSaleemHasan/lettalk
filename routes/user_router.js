@@ -25,7 +25,6 @@ user_Router.post("/signup", (req, res, next) => {
 user_Router.post("/login", (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
-      console.log(bcrypt.compareSync(req.body.password, user.password));
       if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
         res.statusCode = 401;
         res.setHeader("Content-Type", "application/json");

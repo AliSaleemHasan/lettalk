@@ -36,12 +36,18 @@ function Login() {
       });
   };
 
+  const github = (e) => {
+    e.preventDefault();
+    window.open("http://localhost:8080/auth/github", "_self");
+  };
+
   const gotoSignup = (e) => {
     e.preventDefault();
     setSignup(!signup);
   };
   return (
     <div className="login">
+      <button onClick={github}>sign in using github</button>
       <form onSubmit={signup ? handleSignup : handleLogin}>
         {signup && (
           <input
