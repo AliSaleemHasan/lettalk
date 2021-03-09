@@ -3,17 +3,15 @@ const githubStrategy = require("passport-github2").Strategy;
 const User = require("./models/users");
 
 //serialize and deserialize user into session
-passport.serializeUser((user, done) => {
-  //add user id to cookie
-  return done(null, user.id);
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-  User.findById(id)
-    .then((user) => done(null, user))
-    .catch((error) => done(err));
+exports.deserialize = passport.deserializeUser(function (id, done) {
+  User.findById(id, function (err, user) {
+    done(err, user);
+  });
 });
-
 //github strategy
 exports.gitStrategy = passport.use(
   new githubStrategy(
@@ -24,19 +22,22 @@ exports.gitStrategy = passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       console.log(profile);
-      User.findById(profile.id).then((user, err) => {
-        if (err) return done(err);
-        else if (user) return done(null, user);
-        else {
-          let user = new User({ _id: profile.id, email: profile.email });
-          user
-            .save()
-            .then((user) => {
-              return done(null, user);
-            })
-            .catch((err) => console.log(err));
-        }
-      });
+      User.findOne({ email: profile.username })
+        .then((user, err) => {
+          if (err) return done(err);
+          else if (user) return done(null, user);
+          else {
+            let user = new User({ email: profile.username });
+            user.image = profile.photos[0].value;
+            user
+              .save()
+              .then((user) => {
+                return done(null, user);
+              })
+              .catch((err) => console.log(err));
+          }
+        })
+        .catch((err) => console.log(err));
     }
   )
 );

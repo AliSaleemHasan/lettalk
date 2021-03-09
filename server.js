@@ -6,14 +6,15 @@ const passport = require("passport");
 
 //routes
 const userRouter = require("./routes/user_router");
-
+const authRouter = require("./routes/auth_router");
 const port = 8080;
 
 //mongoose connection
-let connection = mongoose.connect("mongodb://localhost:27017/chatApp", {
+let connection = mongoose.connect(process.env.MONGO_URL, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 });
+
 connection
   .then((db) => {
     console.log("connected correctly to mongodb");
@@ -30,14 +31,18 @@ app.use(
   })
 );
 app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.send("hello from server side ");
+  if (req.user) res.send("fuck you " + req.user.username);
+  else res.send("hello from server side ");
 });
+
+app.use("/auth", authRouter);
 app.use("/users", userRouter);
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   let output = {
     message: err.message,
     name: err.name,

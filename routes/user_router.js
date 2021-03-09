@@ -2,10 +2,20 @@ const user_Router = require("express").Router();
 const User = require("../models/users");
 const bcrypt = require("bcrypt");
 const express = require("express");
+const deserialize = require("../authenticate").deserialize;
 
 user_Router.use(express.json());
 user_Router.get("/", (req, res) => {
-  res.send("hello from user router !");
+  console.log(req.session);
+  if (req.user) {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json({ success: true, user: req.user });
+  } else {
+    res.statusCode = 401;
+    res.setHeader("Content-Type", "application/json");
+    res.json({ success: true, user: null });
+  }
 });
 
 user_Router.post("/signup", (req, res, next) => {

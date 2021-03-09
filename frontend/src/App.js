@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Chat from "./Components/Chat";
 import Sidebar from "./Components/Sidebar";
 import useWidth from "./Components/useWidth";
@@ -7,10 +7,27 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Info from "./Components/Info.js";
 import Login from "./Components/Login.js";
 import { useStateValue } from "./StateProvider.js";
+import { ActionTypes } from "./reducer";
 
 function App() {
   const width = useWidth();
-  const [{ user }] = useStateValue();
+  const [{ user }, dispatch] = useStateValue();
+  useEffect(async () => {
+    if (!user) {
+      await fetch("/users", {
+        method: "GET",
+      })
+        .then((response) => response.json())
+        .then((user) => {
+          console.log(user);
+
+          dispatch({
+            type: ActionTypes.SET_USER,
+            user: user.user,
+          });
+        });
+    }
+  }, [user]);
   return width > 786 ? (
     <div className="app">
       {!user ? (
