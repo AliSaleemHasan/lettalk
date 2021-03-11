@@ -40,6 +40,10 @@ function Login() {
     e.preventDefault();
     window.open("http://localhost:8080/auth/github", "_self");
   };
+  const google = (e) => {
+    e.preventDefault();
+    window.open("http://localhost:8080/auth/google", "_self");
+  };
 
   const gotoSignup = (e) => {
     e.preventDefault();
@@ -48,6 +52,7 @@ function Login() {
   return (
     <div className="login">
       <button onClick={github}>sign in using github</button>
+      <button onClick={google}>sign in using google</button>
       <form onSubmit={signup ? handleSignup : handleLogin}>
         {signup && (
           <input

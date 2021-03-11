@@ -14,6 +14,23 @@ router.get(
   }
 );
 
+//google routes
+
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["email", "profile"],
+  })
+);
+
+router.get(
+  "/google/loggedIn",
+  passport.authenticate("google", {
+    failureRedirect: "/auth/failed",
+    successRedirect: "http://localhost:3000/",
+  })
+);
+
 router.get("/failed", (req, res, next) => {
   res.statusCode = 401;
   res.end("error");

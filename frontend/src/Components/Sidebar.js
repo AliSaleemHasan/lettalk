@@ -15,8 +15,16 @@ import { ActionTypes } from "../reducer";
 function Sidebar() {
   const [{ user }, dispatch] = useStateValue();
 
+  const serverLogout = async () => {
+    await fetch("/users", {
+      method: "GET",
+    }).then((response) => alert(response));
+  };
   const logout = (e) => {
     e.preventDefault();
+    if (user.state.Oauth) {
+      serverLogout();
+    }
     dispatch({
       type: ActionTypes.SET_USER,
       user: null,

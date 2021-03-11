@@ -17,9 +17,15 @@ const user = new Schema({
   },
 
   state: {
-    lastseen: Date,
-    default: "",
+    lastseen: {
+      type: Date,
+      default: Date.now,
+    },
     status: {
+      type: Boolean,
+      default: false,
+    },
+    Oauth: {
       type: Boolean,
       default: false,
     },

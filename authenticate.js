@@ -1,5 +1,6 @@
 const passport = require("passport");
 const githubStrategy = require("passport-github2").Strategy;
+const google_straregy = require("passport-google-oauth2").Strategy;
 const User = require("./models/users");
 
 //serialize and deserialize user into session
@@ -29,11 +30,40 @@ exports.gitStrategy = passport.use(
           else {
             let user = new User({ email: profile.username });
             user.image = profile.photos[0].value;
+            user.state.Oauth = true;
             user
               .save()
               .then((user) => {
                 return done(null, user);
               })
+              .catch((err) => console.log(err));
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  )
+);
+
+//google Strategy
+exports.googleStrategy = passport.use(
+  new google_straregy(
+    {
+      clientID: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
+      callbackURL: "http://localhost:8080/auth/google/loggedIn",
+    },
+    (accessToken, refreshToken, profile, done) => {
+      User.findOne({ email: profile.emails[0] })
+        .then((user, err) => {
+          if (err) done(err);
+          else if (user) done(null, user);
+          else {
+            let user = new User({ email: profile.emails[0] });
+            user.username = profile.displayName;
+            user.image = profile.picture;
+            user
+              .save()
+              .then((user) => done(null, user))
               .catch((err) => console.log(err));
           }
         })

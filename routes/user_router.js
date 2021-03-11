@@ -2,11 +2,9 @@ const user_Router = require("express").Router();
 const User = require("../models/users");
 const bcrypt = require("bcrypt");
 const express = require("express");
-const deserialize = require("../authenticate").deserialize;
 
 user_Router.use(express.json());
 user_Router.get("/", (req, res) => {
-  console.log(req.session);
   if (req.user) {
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
@@ -16,6 +14,8 @@ user_Router.get("/", (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.json({ success: true, user: null });
   }
+
+  console.log(req.session);
 });
 
 user_Router.post("/signup", (req, res, next) => {
@@ -47,4 +47,5 @@ user_Router.post("/login", (req, res, next) => {
     })
     .catch((err) => next(err));
 });
+
 module.exports = user_Router;
