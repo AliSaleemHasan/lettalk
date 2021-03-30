@@ -23,14 +23,17 @@ exports.gitStrategy = passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       console.log(profile);
-      User.findOne({ email: profile.username })
+      User.findOne({ email: profile.username + profile.id + "@chaty.com" })
         .then((user, err) => {
           if (err) return done(err);
           else if (user) return done(null, user);
           else {
-            let user = new User({ email: profile.username });
+            let user = new User({
+              email: profile.username + profile.id + "@chaty.com",
+            });
             user.image = profile.photos[0].value;
             user.state.Oauth = true;
+            user.bio = "Hey there,I am using Chaty!";
             user
               .save()
               .then((user) => {
@@ -53,13 +56,16 @@ exports.googleStrategy = passport.use(
       callbackURL: "http://localhost:8080/auth/google/loggedIn",
     },
     (accessToken, refreshToken, profile, done) => {
-      User.findOne({ email: profile.emails[0] })
+      User.findOne({ email: profile.emails[0] + profile.id + "@chaty.com" })
         .then((user, err) => {
           if (err) done(err);
           else if (user) done(null, user);
           else {
-            let user = new User({ email: profile.emails[0] });
+            let user = new User({
+              email: profile.emails[0] + profile.id + "@chaty.com",
+            });
             user.username = profile.displayName;
+            user.bio = "Hey there,I am using Chaty!";
             user.image = profile.picture;
             user
               .save()

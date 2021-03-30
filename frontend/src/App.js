@@ -27,7 +27,7 @@ function App() {
           });
         });
     }
-  }, [user]);
+  }, []);
   return width > 786 ? (
     <div className="app">
       {!user ? (

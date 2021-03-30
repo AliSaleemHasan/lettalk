@@ -1,6 +1,5 @@
 /* sidebar and settings */
-.sidebar,
-.settings {
+.sidebar {
   height: 100%;
   display: flex;
   width: 300px;
@@ -85,29 +84,6 @@
 }
 
 /* settings */
-.settings {
-  animation: settingAnimation 1s;
-
-  flex-direction: column;
-  background-color: #2b3238;
-  color: #f0f2f2;
-}
-
-.settings__header {
-  margin: 0 auto;
-  font-size: 25px;
-  margin-top: 5px;
-}
-
-.settings .MuiAvatar-root {
-  width: 150px;
-  height: 150px;
-  margin: 20px auto;
-}
-
-.settings__settings {
-  flex: 1;
-}
 
 /* keyframes */
 
@@ -132,7 +108,6 @@
 }
 
 @media (max-width: 786px) {
-  .settings,
   .sidebar {
     width: 100%;
   }
