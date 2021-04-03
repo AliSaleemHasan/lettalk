@@ -23,6 +23,7 @@ router.get("/", (req, res) => {
 router.post("/signup", (req, res, next) => {
   let hash = bcrypt.hashSync(req.body.password, 10);
   req.body.password = hash;
+  req.body.bio = "Hey there,i am using Chaty";
   let user = new User(req.body);
   user
     .save()
@@ -72,19 +73,52 @@ router.post(
 );
 
 router.put("/info/:id", (req, res, next) => {
-  User.findByIdAndUpdate(
-    req.params.id,
-    {
-      $set: { username: req.body.info },
-    },
-    { new: true }
-  )
+  let newInfo;
+
+  if (req.query.username) {
+    newInfo = User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: { username: req.body.info },
+      },
+      { new: true }
+    );
+  } else {
+    newInfo = User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: { bio: req.body.info },
+      },
+      { new: true }
+    );
+  }
+
+  newInfo
     .then(
       (user) => {
-        console.log(user);
+        console.log("ali");
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json({ user });
+      },
+      (err) => next(err)
+    )
+    .catch((err) => next(err));
+});
+
+//search for user by its id
+router.post("/search", (req, res, next) => {
+  User.find(
+    { $text: { $search: req.body.query } },
+    { score: { $meta: "textScore" } }
+  )
+    .sort({ score: { $meta: "textScore" } })
+
+    .then(
+      (users) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(users);
       },
       (err) => next(err)
     )

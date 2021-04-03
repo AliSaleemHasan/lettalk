@@ -10,6 +10,7 @@ const path = require("path");
 //routes
 const userRouter = require("./routes/user_router");
 const authRouter = require("./routes/auth_router");
+const chatRouter = require("./routes/chat_router");
 
 const app = express();
 app.use(express.json());
@@ -29,16 +30,9 @@ app.get("/", (req, res) => {
   else res.send("hello from server side ");
 });
 
-app.post("/upload/image", uploadStorge.single("file"), (req, res) => {
-  console.log(req.file);
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "application/json");
-  res.json = { success: true, file: req.file };
-});
-
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
-
+app.use("/chats", chatRouter);
 app.use((err, req, res, next) => {
   let output = {
     message: err.message,

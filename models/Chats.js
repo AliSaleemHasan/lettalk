@@ -23,7 +23,7 @@ const chatSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "user",
   },
-  messages: [message],
+  messages: [messageScheam],
 });
 
 module.exports = mongoose.model("chat", chatSchema);

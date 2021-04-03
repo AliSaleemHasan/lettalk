@@ -13,7 +13,8 @@ import { ActionTypes } from "../reducer";
 function Sidebar() {
   const [{ user }, dispatch] = useStateValue();
   const [toggleSettings, setToggleSettings] = useState(false);
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchedUsers, setSearchedUsers] = useState([]);
   const serverLogout = async () => {
     await fetch("/users?logout=true", {
       method: "GET",
@@ -33,6 +34,20 @@ function Sidebar() {
     e.preventDefault();
     console.log(user);
     setToggleSettings(true);
+  };
+
+  const searchForUsers = async (e) => {
+    e.preventDefault();
+    await fetch("/users/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query: searchQuery }),
+    })
+      .then((response) => response.json())
+      .then((data) => setSearchedUsers(data))
+      .catch((err) => console.log(err));
   };
 
   return toggleSettings ? (
@@ -64,74 +79,27 @@ function Sidebar() {
       </div>
       <div className="sidebar__right">
         <div className="sidebar__rightsearch">
-          <form action="">
+          <form onSubmit={searchForUsers} action="">
             <Search />
-            <input type="text" placeholder="Search.." />
+            <input
+              value={searchQuery}
+              type="text"
+              placeholder="Search.."
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
             <button type="submit"></button>
           </form>
         </div>
 
         <div className="sidebar__rightChats">
-          <SidebarChat
-            name="Ali"
-            count={10}
-            lastmessage="this is last message"
-          />
-          <SidebarChat
-            name="Ali"
-            count={10}
-            lastmessage="this is last message"
-          />
-          <SidebarChat
-            name="Ali"
-            count={10}
-            lastmessage="this is last message"
-          />
-          <SidebarChat
-            name="Ali"
-            count={10}
-            lastmessage="this is last message"
-          />
-          <SidebarChat
-            name="Ali"
-            count={10}
-            lastmessage="this is last message"
-          />
-          <SidebarChat
-            name="Ali"
-            count={10}
-            lastmessage="this is last message"
-          />
-          <SidebarChat
-            name="Ali"
-            count={10}
-            lastmessage="this is last message"
-          />
-          <SidebarChat
-            name="Ali"
-            count={10}
-            lastmessage="this is last message"
-          />
-          <SidebarChat
-            name="Ali"
-            count={10}
-            lastmessage="this is last message"
-          />
-          <SidebarChat
-            name="Ali"
-            count={10}
-            lastmessage="this is last message"
-          />
-          <SidebarChat
-            name="Ali"
-            count={10}
-            lastmessage="this is last message"
-          />
-          <SidebarChat
-            name="Ali"
-            count={10}
-            lastmessage="this is last message"
-          />
+          {searchedUsers.map((user) => (
+            <SidebarChat
+              key={user?._id}
+              name={user?.username}
+              image={user?.image}
+              bio={user?.bio}
+            />
+          ))}
         </div>
       </div>
     </div>
