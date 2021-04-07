@@ -17,7 +17,6 @@ function Settings({ setToggleSettings }) {
     const formData = new FormData();
 
     formData.append("file", fileInput.files[0]);
-    // console.log(formData);
     const options = {
       method: "POST",
       Headers: {
@@ -30,11 +29,10 @@ function Settings({ setToggleSettings }) {
 
   const UploadImage = async (e) => {
     e.preventDefault();
+    setSaveImage(false);
     const options = uploadImageOptions();
-    e.preventDefault();
     await fetch(`/users/upload/image/${user._id}`, options)
       .then((response) => response.json())
-      .then((data) => console.log(data))
       .catch((err) => console.log(err));
   };
 
@@ -48,7 +46,6 @@ function Settings({ setToggleSettings }) {
         setSaveImage(true);
       }
     };
-    console.log(e.target.files[0]);
 
     reader.readAsDataURL(e.target.files[0]);
   };

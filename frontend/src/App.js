@@ -19,8 +19,6 @@ function App() {
       })
         .then((response) => response.json())
         .then((user) => {
-          console.log(user);
-
           dispatch({
             type: ActionTypes.SET_USER,
             user: user.user,

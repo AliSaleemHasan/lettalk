@@ -1,11 +1,11 @@
 import React from "react";
 import "./Message.css";
 import Avatar from "@material-ui/core/Avatar";
-function Message({ content, timestamp, is_sender }) {
+function Message({ content, timestamp, is_sender, image }) {
   return (
     <div className={`message ${!is_sender ? "message__r" : ""}`}>
       <div className="message__left">
-        <Avatar />
+        <Avatar src={image} />
       </div>
       <div className="message__right">
         <p className="message__content">{content}</p>

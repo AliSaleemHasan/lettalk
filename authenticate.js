@@ -22,7 +22,6 @@ exports.gitStrategy = passport.use(
       callbackURL: "http://localhost:8080/auth/github/loggedIn",
     },
     (accessToken, refreshToken, profile, done) => {
-      console.log(profile);
       User.findOne({ email: profile.username + profile.id + "@chaty.com" })
         .then((user, err) => {
           if (err) return done(err);

@@ -7,7 +7,6 @@ import { ActionTypes } from "../reducer.js";
 function Settings({ type, name, Icon, settingName }) {
   const [{ user }, dispatch] = useStateValue();
   const editInfo = async () => {
-    console.log("name +" + settingName);
     let info = prompt("Please edit bellow information or click cancle", name);
     const response = await fetch(
       `/users/info/${user._id}?${settingName}=${name}`,
@@ -19,7 +18,7 @@ function Settings({ type, name, Icon, settingName }) {
         body: JSON.stringify({ info }),
       }
     );
-    response.json().then((data) => console.log(data.user));
+    response.json().catch((err) => console.log(err));
   };
   return (
     <div className="appSetting">

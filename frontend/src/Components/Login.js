@@ -76,7 +76,9 @@ function Login() {
             </p>
             <h2>Sign in with:</h2>
             <button onClick={() => setloginMethod(1)}>Gmail or Github</button>
-            <button onClick={() => setloginMethod(2)}>Email or Password</button>
+            <button onClick={() => setloginMethod(2)}>
+              Email And Password
+            </button>
           </div>
         )}
         {/* <h2>sing in</h2>

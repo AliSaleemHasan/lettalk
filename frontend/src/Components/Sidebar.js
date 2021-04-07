@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Sidebar.css";
 import Avatar from "@material-ui/core/Avatar";
 import Chat from "@material-ui/icons/Chat";
@@ -10,15 +10,20 @@ import IconButton from "@material-ui/core/IconButton";
 import Setting from "./Setting.js";
 import { useStateValue } from "../StateProvider.js";
 import { ActionTypes } from "../reducer";
+import Close from "@material-ui/icons/Close";
 function Sidebar() {
   const [{ user }, dispatch] = useStateValue();
   const [toggleSettings, setToggleSettings] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchedUsers, setSearchedUsers] = useState([]);
+  const [userList, setUserList] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
   const serverLogout = async () => {
     await fetch("/users?logout=true", {
       method: "GET",
-    }).then((response) => console.log(response));
+    })
+      .then((response) => response.json())
+      .catch((err) => console.log(err));
   };
   const logout = (e) => {
     e.preventDefault();
@@ -32,12 +37,12 @@ function Sidebar() {
   };
   const gotoSettings = (e) => {
     e.preventDefault();
-    console.log(user);
     setToggleSettings(true);
   };
 
   const searchForUsers = async (e) => {
     e.preventDefault();
+    setIsSearching(true);
     await fetch("/users/search", {
       method: "POST",
       headers: {
@@ -50,6 +55,14 @@ function Sidebar() {
       .catch((err) => console.log(err));
   };
 
+  useEffect(async () => {
+    await fetch(`/chats/user/${user._id}`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => setUserList(data.chats))
+      .catch((err) => console.log(err));
+  }, []);
   return toggleSettings ? (
     <div className="settings">
       <Setting setToggleSettings={setToggleSettings} />
@@ -89,17 +102,39 @@ function Sidebar() {
             />
             <button type="submit"></button>
           </form>
+          {isSearching && <Close onClick={() => setIsSearching(false)} />}
         </div>
 
         <div className="sidebar__rightChats">
-          {searchedUsers.map((user) => (
-            <SidebarChat
-              key={user?._id}
-              name={user?.username}
-              image={user?.image}
-              bio={user?.bio}
-            />
-          ))}
+          {isSearching
+            ? searchedUsers?.map((resultUser) => (
+                <SidebarChat
+                  key={resultUser._id}
+                  name={resultUser.username}
+                  bio={resultUser.bio}
+                  user2={resultUser._id}
+                />
+              ))
+            : userList.map((chat) => {
+                if (chat.user1._id !== user._id)
+                  return (
+                    <SidebarChat
+                      id={chat._id}
+                      image={chat.user1.image}
+                      key={chat.user1._id}
+                      name={chat.user1.username}
+                    />
+                  );
+                else
+                  return (
+                    <SidebarChat
+                      id={chat._id}
+                      image={chat.user2.image}
+                      key={chat._id}
+                      name={chat.user2.username}
+                    />
+                  );
+              })}
         </div>
       </div>
     </div>

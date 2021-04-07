@@ -13,6 +13,10 @@ const messageScheam = new Schema({
     type: Boolean,
     default: false,
   },
+  sender: {
+    type: String,
+    required: true,
+  },
 });
 const chatSchema = new Schema({
   user1: {

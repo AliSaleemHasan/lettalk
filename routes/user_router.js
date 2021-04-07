@@ -36,14 +36,12 @@ router.post("/signup", (req, res, next) => {
 });
 
 router.post("/login", (req, res, next) => {
-  -console.log(req.body.email);
   User.findOne({ email: req.body.email }).then((user) => {
     if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
       res.statusCode = 401;
       res.setHeader("Content-Type", "application/json");
       res.json({ status: "failed" });
     } else {
-      -console.log(req.email);
       req.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
       res.json({ status: "Success", user: user });
@@ -56,13 +54,13 @@ router.post(
   uploadStorge.single("file"),
   (req, res, next) => {
     User.findById(req.params.id).then((user) => {
-      //   if (user.image && fs.existsSync(user.image)) fs.unlinkSync(user.imag);
+      console.log(user.image);
+      if (user.image && fs.existsSync(user.image)) fs.unlinkSync(user.image);
       user.image = "/uploads/" + req.file.filename;
 
       user
         .save()
         .then((user) => {
-          console.log(user);
           req.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
           res.json({ success: true, user });
@@ -96,7 +94,6 @@ router.put("/info/:id", (req, res, next) => {
   newInfo
     .then(
       (user) => {
-        console.log("ali");
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json({ user });

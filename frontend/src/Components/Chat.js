@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Chat.css";
 import Message from "./Message.js";
 import IconButton from "@material-ui/core/IconButton";
@@ -10,15 +10,26 @@ import useWidth from "./useWidth";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import { useHistory } from "react-router-dom";
 import Picker from "emoji-picker-react";
-import { Icon } from "@material-ui/core";
-import Info from "./Info";
+import { useParams } from "react-router-dom";
+import { useStateValue } from "../StateProvider";
+import { ActionTypes } from "../reducer";
 function Chat() {
   const width = useWidth();
   const history = useHistory();
   const [input, setInput] = useState("");
   const [toggleEmoji, setToggleEmoji] = useState(false);
-  const gotoSidebar = (e) => {
+  const [{ user, chat }, dispatch] = useStateValue();
+  const [messages, setMessages] = useState([]);
+  const chatId = useParams();
+  const gotoSidebar = async (e) => {
     e.preventDefault();
+    // await fetch(`/chats/${chatID}`, {
+    //   method: "PUT",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: {},
+    // }).then((response) => {});
     history.push("/");
   };
   const onEmojiClick = (e, emoji) => {
@@ -31,6 +42,33 @@ function Chat() {
     history.push("/chat/ali/info");
   };
 
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    await fetch(`/chats/${chatId.chatId}/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: input, sender: user._id }),
+    })
+      .then((response) => response.json())
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(async () => {
+    await fetch(`/chats/${chatId.chatId}`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        dispatch({
+          type: ActionTypes.SET_CHAT,
+          chat: data,
+        });
+        setMessages(data.messages);
+      })
+      .catch((err) => console.log(err));
+  }, []);
   const pickerStyle = {
     color: "#2b3238",
     width: "100%",
@@ -49,7 +87,9 @@ function Chat() {
             ""
           )}
           <p className="chat__headerName" onClick={gotoInfo}>
-            Ali
+            {chat?.user1?._id == user.id
+              ? chat?.user1?.username
+              : chat?.user2?.username}
           </p>
           <div className="chat__headerStatus">
             <p className="chat__status"></p>
@@ -66,18 +106,19 @@ function Chat() {
         </div>
       </div>
       <div className="chat__body">
-        <Message content="Hello" timestamp="10:45aidhawam" is_sender={true} />
-        <Message
-          content="Hey ..how are you"
-          timestamp="10:am"
-          is_sender={false}
-        />
-
-        <Message
-          content="fine and you!"
-          timestamp="10:45aidhawam"
-          is_sender={true}
-        />
+        {messages?.map((message) => (
+          <Message
+            key={message._id}
+            timestamp={message.timestamp}
+            content={message.message}
+            is_sender={message.sender !== user._id}
+            image={
+              message.sender == user._id
+                ? chat?.user1?.image
+                : chat?.user2?.image
+            }
+          />
+        ))}
       </div>
       <div className="chat__footer">
         <IconButton
@@ -93,7 +134,7 @@ function Chat() {
             type="text"
             placeholder="Type something to send.."
           />
-          <IconButton>
+          <IconButton type="submit" onClick={sendMessage}>
             <Send />
           </IconButton>
         </form>

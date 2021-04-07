@@ -1,9 +1,11 @@
 export const initialState = {
   user: null,
+  chat: null,
 };
 
 export const ActionTypes = {
   SET_USER: "SET_USER",
+  SET_CHAT: "SET_CHAT",
 };
 
 const reducer = (state, action) => {
@@ -11,9 +13,15 @@ const reducer = (state, action) => {
   switch (action.type) {
     case ActionTypes.SET_USER:
       return {
-        state,
+        ...state,
         user: action.user,
       };
+    case ActionTypes.SET_CHAT: {
+      return {
+        ...state,
+        chat: action.chat,
+      };
+    }
 
     default:
       return state;
