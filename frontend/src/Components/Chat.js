@@ -11,14 +11,17 @@ import ArrowBack from "@material-ui/icons/ArrowBack";
 import { useHistory } from "react-router-dom";
 import Picker from "emoji-picker-react";
 import { useParams } from "react-router-dom";
-import { useStateValue } from "../StateProvider";
-import { ActionTypes } from "../reducer";
+import { setChat, Selector as chatSelector } from "../features/chatSlice";
+import { Selector as userSelector } from "../features/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 function Chat() {
   const width = useWidth();
   const history = useHistory();
   const [input, setInput] = useState("");
   const [toggleEmoji, setToggleEmoji] = useState(false);
-  const [{ user, chat }, dispatch] = useStateValue();
+  const user = useSelector(userSelector);
+  const chat = useSelector(chatSelector);
+  const dispatch = useDispatch();
   const [messages, setMessages] = useState([]);
   const chatId = useParams();
   const gotoSidebar = async (e) => {
@@ -56,15 +59,14 @@ function Chat() {
   };
 
   useEffect(async () => {
+    console.log("comming back");
+    console.log(chatId.chatId);
     await fetch(`/chats/${chatId.chatId}`, {
       method: "GET",
     })
       .then((response) => response.json())
       .then((data) => {
-        dispatch({
-          type: ActionTypes.SET_CHAT,
-          chat: data,
-        });
+        dispatch(setChat(data));
         setMessages(data.messages);
       })
       .catch((err) => console.log(err));

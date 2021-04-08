@@ -7,13 +7,14 @@ import Email from "@material-ui/icons/Email";
 import { Info as Inf } from "@material-ui/icons";
 import { IconButton } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import { useStateValue } from "../StateProvider.js";
+import { Selector } from "../features/chatSlice";
+import { useSelector } from "react-redux";
 function Info() {
   const history = useHistory();
-  const [{ chat, user }] = useStateValue();
+  const chat = useSelector(Selector);
   const returntoChat = (e) => {
     e.preventDefault();
-    history.push("/chat/ali");
+    history.push(`/chat/${chat._id}`);
   };
   return (
     <div className="info">

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import "./Login.css";
-import { useStateValue } from "../StateProvider.js";
-import { ActionTypes } from "../reducer";
 import request from "../handleRequests.js";
+import { setUser } from "../features/userSlice";
+import { useDispatch } from "react-redux";
 function Login() {
-  const [{ user }, dispatch] = useStateValue();
+  const dispatch = useDispatch();
   const [signup, setSignup] = useState(false);
   const [email, setEmail] = useState("");
   const [username, setusername] = useState("");
@@ -17,10 +17,7 @@ function Login() {
       .login("/users/login", password, email)
       .then((response) => response.json())
       .then((data) => {
-        dispatch({
-          type: ActionTypes.SET_USER,
-          user: data.user,
-        });
+        dispatch(setUser(data.user));
       });
   };
 
@@ -30,10 +27,7 @@ function Login() {
       .signup("/users/signup", username, password, email)
       .then((response) => response.json())
       .then((data) => {
-        dispatch({
-          type: ActionTypes.SET_USER,
-          user: data.user,
-        });
+        dispatch(setUser(data.user));
       });
   };
 

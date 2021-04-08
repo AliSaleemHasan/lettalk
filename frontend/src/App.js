@@ -1,17 +1,17 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Chat from "./Components/Chat";
 import Sidebar from "./Components/Sidebar";
 import useWidth from "./Components/useWidth";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Info from "./Components/Info.js";
 import Login from "./Components/Login.js";
-import { useStateValue } from "./StateProvider.js";
-import { ActionTypes } from "./reducer";
-
+import { Selector, setUser } from "./features/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 function App() {
   const width = useWidth();
-  const [{ user }, dispatch] = useStateValue();
+  const user = useSelector(Selector);
+  const dispatch = useDispatch();
   useEffect(async () => {
     if (!user) {
       await fetch("/users", {
@@ -19,10 +19,7 @@ function App() {
       })
         .then((response) => response.json())
         .then((user) => {
-          dispatch({
-            type: ActionTypes.SET_USER,
-            user: user.user,
-          });
+          dispatch(setUser(user.user));
         });
     }
   }, []);

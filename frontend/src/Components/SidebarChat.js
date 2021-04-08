@@ -2,21 +2,22 @@ import { Avatar } from "@material-ui/core";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import "./SidebarChat.css";
-import { useStateValue } from "../StateProvider.js";
-import { ActionTypes } from "../reducer";
+import { Selector as chatSelector, setChat } from "../features/chatSlice";
+import { Selector as userSelector } from "../features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 function SidebarChat({ user2, id, name, count, image, bio }) {
   const history = useHistory();
-  const [{ user, chat }, dispatch] = useStateValue();
+  const chat = useSelector(chatSelector);
+  const user = useSelector(userSelector);
+  const dispatch = useDispatch();
   const gotoChat = (e) => {
     e.preventDefault();
-    console.log(id);
-    dispatch({
-      type: ActionTypes.SET_CHAT,
-      chat: {
+    dispatch(
+      setChat({
         user1: user,
         user2,
-      },
-    });
+      })
+    );
     history.push(`/chat/${id}`);
   };
   const addChat = async (e) => {
@@ -42,9 +43,7 @@ function SidebarChat({ user2, id, name, count, image, bio }) {
           <p className="sidebarChat__name">{name}</p>
           {!bio && <p className="sidebarChat__count">{count}</p>}
         </div>
-        <p className="sidebarChat__lastmessage">
-          {chat?.messages[chat.messages.length - 1]}
-        </p>
+        <p className="sidebarChat__lastmessage">Last Message</p>
         <p className="sidebarChat__lastmessage">{bio}</p>
       </div>
     </div>

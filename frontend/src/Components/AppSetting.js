@@ -2,10 +2,10 @@ import React from "react";
 import "./AppSetting.css";
 import IconButton from "@material-ui/core/IconButton";
 import Edit from "@material-ui/icons/Edit";
-import { useStateValue } from "../StateProvider.js";
-import { ActionTypes } from "../reducer.js";
+import { Selector } from "../features/userSlice";
+import { useSelector } from "react-redux";
 function Settings({ type, name, Icon, settingName }) {
-  const [{ user }, dispatch] = useStateValue();
+  const user = useSelector(Selector);
   const editInfo = async () => {
     let info = prompt("Please edit bellow information or click cancle", name);
     const response = await fetch(

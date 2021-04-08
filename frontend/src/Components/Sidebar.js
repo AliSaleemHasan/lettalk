@@ -8,11 +8,13 @@ import Search from "@material-ui/icons/Search";
 import SidebarChat from "./SidebarChat";
 import IconButton from "@material-ui/core/IconButton";
 import Setting from "./Setting.js";
-import { useStateValue } from "../StateProvider.js";
-import { ActionTypes } from "../reducer";
+import { setUser, Selector } from "../features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 import Close from "@material-ui/icons/Close";
 function Sidebar() {
-  const [{ user }, dispatch] = useStateValue();
+  const user = useSelector(Selector);
+  const dispatch = useDispatch();
   const [toggleSettings, setToggleSettings] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchedUsers, setSearchedUsers] = useState([]);
@@ -30,10 +32,7 @@ function Sidebar() {
     if (user.state.Oauth) {
       serverLogout();
     }
-    dispatch({
-      type: ActionTypes.SET_USER,
-      user: null,
-    });
+    dispatch(setUser(null));
   };
   const gotoSettings = (e) => {
     e.preventDefault();

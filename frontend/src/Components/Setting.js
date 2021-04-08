@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import "./Setting.css";
 import { Avatar } from "@material-ui/core";
-import { useStateValue } from "../StateProvider.js";
+import { Selector } from "../features/userSlice";
+import { useSelector } from "react-redux";
 import AppSetting from "./AppSetting.js";
 import Person from "@material-ui/icons/Person";
 import IconButton from "@material-ui/core/IconButton";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 function Settings({ setToggleSettings }) {
-  const [{ user }, dispatch] = useStateValue();
+  const user = useSelector(Selector);
   const [newImage, setnewImage] = useState("");
   const [saveImage, setSaveImage] = useState(false);
 
