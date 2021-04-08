@@ -7,6 +7,7 @@ const { uploadStorge } = require("../mongoInit.js");
 router.use(express.json());
 
 router.get("/", (req, res) => {
+  console.log(req.user);
   if (req.user && !req.query.logout) {
     req.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
@@ -44,7 +45,7 @@ router.post("/login", (req, res, next) => {
     } else {
       req.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
-      res.json({ status: "Success", user: user });
+      res.json({ status: "Success", user });
     }
   });
 });

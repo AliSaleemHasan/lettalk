@@ -4,21 +4,21 @@ import IconButton from "@material-ui/core/IconButton";
 import Edit from "@material-ui/icons/Edit";
 import { Selector } from "../features/userSlice";
 import { useSelector } from "react-redux";
+import requests from "../handleRequests.js";
 function Settings({ type, name, Icon, settingName }) {
   const user = useSelector(Selector);
-  const editInfo = async () => {
-    let info = prompt("Please edit bellow information or click cancle", name);
-    const response = await fetch(
-      `/users/info/${user._id}?${settingName}=${name}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ info }),
-      }
+  const editInfo = () => {
+    let updatedInfo = prompt(
+      "Please edit bellow information or click cancle",
+      name
     );
-    response.json().catch((err) => console.log(err));
+    const response = requests.editUserInfo(
+      user._id,
+      settingName,
+      name,
+      updatedInfo
+    );
+    response.catch((err) => console.log(err));
   };
   return (
     <div className="appSetting">

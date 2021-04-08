@@ -10,7 +10,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Setting from "./Setting.js";
 import { setUser, Selector } from "../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-
+import requests from "../handleRequests.js";
 import Close from "@material-ui/icons/Close";
 function Sidebar() {
   const user = useSelector(Selector);
@@ -20,12 +20,8 @@ function Sidebar() {
   const [searchedUsers, setSearchedUsers] = useState([]);
   const [userList, setUserList] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const serverLogout = async () => {
-    await fetch("/users?logout=true", {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .catch((err) => console.log(err));
+  const serverLogout = () => {
+    requests.logout().catch((err) => console.log(err));
   };
   const logout = (e) => {
     e.preventDefault();
@@ -39,26 +35,18 @@ function Sidebar() {
     setToggleSettings(true);
   };
 
-  const searchForUsers = async (e) => {
+  const searchForUsers = (e) => {
     e.preventDefault();
     setIsSearching(true);
-    await fetch("/users/search", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query: searchQuery }),
-    })
-      .then((response) => response.json())
+    requests
+      .searchForUsers(searchQuery)
       .then((data) => setSearchedUsers(data))
       .catch((err) => console.log(err));
   };
 
-  useEffect(async () => {
-    await fetch(`/chats/user/${user._id}`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
+  useEffect(() => {
+    requests
+      .getAllChats(user._id)
       .then((data) => setUserList(data.chats))
       .catch((err) => console.log(err));
   }, []);

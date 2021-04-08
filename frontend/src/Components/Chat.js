@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import { setChat, Selector as chatSelector } from "../features/chatSlice";
 import { Selector as userSelector } from "../features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
+import requests from "../handleRequests.js";
 function Chat() {
   const width = useWidth();
   const history = useHistory();
@@ -24,15 +25,8 @@ function Chat() {
   const dispatch = useDispatch();
   const [messages, setMessages] = useState([]);
   const chatId = useParams();
-  const gotoSidebar = async (e) => {
+  const gotoSidebar = (e) => {
     e.preventDefault();
-    // await fetch(`/chats/${chatID}`, {
-    //   method: "PUT",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: {},
-    // }).then((response) => {});
     history.push("/");
   };
   const onEmojiClick = (e, emoji) => {
@@ -45,36 +39,23 @@ function Chat() {
     history.push("/chat/ali/info");
   };
 
-  const sendMessage = async (e) => {
+  const sendMessage = (e) => {
     e.preventDefault();
-    await fetch(`/chats/${chatId.chatId}/messages`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message: input, sender: user._id }),
-    })
-      .then((response) => response.json())
+    requests
+      .sendMessage(chatId.chatId, input, user._id)
       .catch((err) => console.log(err));
   };
 
-  useEffect(async () => {
-    console.log("comming back");
-    console.log(chatId.chatId);
-    await fetch(`/chats/${chatId.chatId}`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
+  useEffect(() => {
+    requests
+      .getChat(chatId.chatId)
       .then((data) => {
         dispatch(setChat(data));
         setMessages(data.messages);
       })
       .catch((err) => console.log(err));
   }, []);
-  const pickerStyle = {
-    color: "#2b3238",
-    width: "100%",
-  };
+
   return (
     <div className="chat">
       <div className="chat__header">

@@ -8,19 +8,16 @@ import Info from "./Components/Info.js";
 import Login from "./Components/Login.js";
 import { Selector, setUser } from "./features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
+import requests from "./handleRequests";
 function App() {
   const width = useWidth();
   const user = useSelector(Selector);
   const dispatch = useDispatch();
-  useEffect(async () => {
+  useEffect(() => {
     if (!user) {
-      await fetch("/users", {
-        method: "GET",
-      })
-        .then((response) => response.json())
-        .then((user) => {
-          dispatch(setUser(user.user));
-        });
+      requests.getUser().then((user) => {
+        dispatch(setUser(user.user));
+      });
     }
   }, []);
   return width > 786 ? (

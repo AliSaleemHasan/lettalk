@@ -2,12 +2,12 @@ import { Avatar } from "@material-ui/core";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import "./SidebarChat.css";
+import requests from "../handleRequests.js";
 import { Selector as chatSelector, setChat } from "../features/chatSlice";
 import { Selector as userSelector } from "../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 function SidebarChat({ user2, id, name, count, image, bio }) {
   const history = useHistory();
-  const chat = useSelector(chatSelector);
   const user = useSelector(userSelector);
   const dispatch = useDispatch();
   const gotoChat = (e) => {
@@ -22,16 +22,7 @@ function SidebarChat({ user2, id, name, count, image, bio }) {
   };
   const addChat = async (e) => {
     e.preventDefault();
-    await fetch(`/chats/user/${user._id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ user2 }),
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
+    requests.addChat(user._id, user2).catch((err) => console.log(err));
   };
   return (
     <div className="sidebarChat" onClick={!bio ? gotoChat : addChat}>
