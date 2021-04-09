@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./Setting.css";
 import { Avatar } from "@material-ui/core";
-import { Selector } from "../features/userSlice";
-import { useSelector } from "react-redux";
+import { Selector, setUser } from "../features/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 import AppSetting from "./AppSetting.js";
 import Person from "@material-ui/icons/Person";
 import IconButton from "@material-ui/core/IconButton";
@@ -12,7 +12,7 @@ function Settings({ setToggleSettings }) {
   const user = useSelector(Selector);
   const [newImage, setnewImage] = useState("");
   const [saveImage, setSaveImage] = useState(false);
-
+  const dispatch = useDispatch();
   const uploadImageOptions = () => {
     const fileInput = document.querySelector(".upload__file");
     const formData = new FormData();
@@ -34,6 +34,7 @@ function Settings({ setToggleSettings }) {
     const options = uploadImageOptions();
     await fetch(`/users/upload/image/${user._id}`, options)
       .then((response) => response.json())
+      .then((data) => dispatch(setUser(data.user)))
       .catch((err) => console.log(err));
   };
 
@@ -97,7 +98,12 @@ function Settings({ setToggleSettings }) {
       <div className="settings__settings">
         <AppSetting name={user.username} Icon={Person} settingName="username" />
         <AppSetting name={user.bio} Icon={Person} settingName="bio" />
-        <AppSetting Icon={Person} name={user.email} settingName="email" />
+        <AppSetting
+          type="email"
+          Icon={Person}
+          name={user.email}
+          settingName="email"
+        />
       </div>
 
       <IconButton onClick={returntoChat}>

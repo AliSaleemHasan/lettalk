@@ -47,12 +47,7 @@ function Login() {
   return (
     <div className="login">
       <div className="login__header">
-        <img
-          src="https://ci5.googleusercontent.com/proxy/i1o6KTJQTHHmX5hnYZ7SqYRXbGgIjtJP3KMGDfF2GO40Sk6G81IuS2gaqcjCHO0e9fvMINsJOz9H_NKe7jnYy4SsdtJFu6Oxk9Z9ybAW9DvOxJrKpq-Wg7DMpq-u_7YUpzFsasTCCWM33mZB1hoWteqkgXkx5yCq=s0-d-e1-ft#https://www.freelogodesign.org/file/app/client/thumb/360c8536-91f2-483b-9f6c-7034f81996ce_200x200.png"
-          width="75"
-          height="75"
-          alt="logo"
-        />
+        <img src="/defaults/Chaty.png" width="75" height="75" alt="logo" />
         {signup && <button>next</button>}
       </div>
       <div className="login__container">

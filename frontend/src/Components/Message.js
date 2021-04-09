@@ -3,7 +3,7 @@ import "./Message.css";
 import Avatar from "@material-ui/core/Avatar";
 function Message({ content, timestamp, is_sender, image }) {
   return (
-    <div className={`message ${!is_sender ? "message__r" : ""}`}>
+    <div className={`message ${is_sender ? "message__r" : ""}`}>
       <div className="message__left">
         <Avatar src={image} />
       </div>

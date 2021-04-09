@@ -98,7 +98,9 @@ function Sidebar() {
                 <SidebarChat
                   key={resultUser._id}
                   name={resultUser.username}
-                  bio={resultUser.bio}
+                  email={resultUser.email}
+                  type="search"
+                  image={resultUser.image}
                   user2={resultUser._id}
                 />
               ))

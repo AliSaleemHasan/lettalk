@@ -36,7 +36,7 @@ function Chat() {
 
   const gotoInfo = (e) => {
     e.preventDefault();
-    history.push("/chat/ali/info");
+    history.push(`/chat/${chat._id}/info`);
   };
 
   const sendMessage = (e) => {
@@ -44,6 +44,7 @@ function Chat() {
     requests
       .sendMessage(chatId.chatId, input, user._id)
       .catch((err) => console.log(err));
+    setInput("");
   };
 
   useEffect(() => {
@@ -94,9 +95,9 @@ function Chat() {
             key={message._id}
             timestamp={message.timestamp}
             content={message.message}
-            is_sender={message.sender !== user._id}
+            is_sender={message.sender === user._id}
             image={
-              message.sender == user._id
+              message.sender == chat?.user1._id
                 ? chat?.user1?.image
                 : chat?.user2?.image
             }

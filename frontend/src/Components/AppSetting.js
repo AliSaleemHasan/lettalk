@@ -2,11 +2,14 @@ import React from "react";
 import "./AppSetting.css";
 import IconButton from "@material-ui/core/IconButton";
 import Edit from "@material-ui/icons/Edit";
-import { Selector } from "../features/userSlice";
-import { useSelector } from "react-redux";
+import { Selector, setUser } from "../features/userSlice";
+import { useSelector, useDispatch } from "react-redux";
+
 import requests from "../handleRequests.js";
+
 function Settings({ type, name, Icon, settingName }) {
   const user = useSelector(Selector);
+  const dispatch = useDispatch();
   const editInfo = () => {
     let updatedInfo = prompt(
       "Please edit bellow information or click cancle",
@@ -18,7 +21,9 @@ function Settings({ type, name, Icon, settingName }) {
       name,
       updatedInfo
     );
-    response.catch((err) => console.log(err));
+    response
+      .then((newUser) => dispatch(setUser(newUser.user)))
+      .catch((err) => console.log(err));
   };
   return (
     <div className="appSetting">
@@ -36,8 +41,8 @@ function Settings({ type, name, Icon, settingName }) {
       </div>
 
       {type !== "email" && (
-        <IconButton>
-          <Edit onClick={editInfo} />
+        <IconButton onClick={editInfo}>
+          <Edit />
         </IconButton>
       )}
     </div>
