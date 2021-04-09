@@ -7,6 +7,8 @@ import AppSetting from "./AppSetting.js";
 import Person from "@material-ui/icons/Person";
 import IconButton from "@material-ui/core/IconButton";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import { Info as Inf } from "@material-ui/icons";
+import Email from "@material-ui/icons/Email";
 
 function Settings({ setToggleSettings }) {
   const user = useSelector(Selector);
@@ -97,10 +99,10 @@ function Settings({ setToggleSettings }) {
 
       <div className="settings__settings">
         <AppSetting name={user.username} Icon={Person} settingName="username" />
-        <AppSetting name={user.bio} Icon={Person} settingName="bio" />
+        <AppSetting name={user.bio} Icon={Inf} settingName="bio" />
         <AppSetting
           type="email"
-          Icon={Person}
+          Icon={Email}
           name={user.email}
           settingName="email"
         />

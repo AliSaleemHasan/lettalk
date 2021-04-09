@@ -71,9 +71,9 @@ function Chat() {
             ""
           )}
           <p className="chat__headerName" onClick={gotoInfo}>
-            {chat?.user1?._id == user.id
-              ? chat?.user1?.username
-              : chat?.user2?.username}
+            {chat?.user1?._id === user._id
+              ? chat?.user2?.username
+              : chat?.user1?.username}
           </p>
           <div className="chat__headerStatus">
             <p className="chat__status"></p>

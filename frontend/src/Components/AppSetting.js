@@ -15,15 +15,17 @@ function Settings({ type, name, Icon, settingName }) {
       "Please edit bellow information or click cancle",
       name
     );
-    const response = requests.editUserInfo(
-      user._id,
-      settingName,
-      name,
-      updatedInfo
-    );
-    response
-      .then((newUser) => dispatch(setUser(newUser.user)))
-      .catch((err) => console.log(err));
+    if (updatedInfo) {
+      const response = requests.editUserInfo(
+        user._id,
+        settingName,
+        name,
+        updatedInfo
+      );
+      response
+        .then((newUser) => dispatch(setUser(newUser.user)))
+        .catch((err) => console.log(err));
+    }
   };
   return (
     <div className="appSetting">
