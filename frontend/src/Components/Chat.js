@@ -14,10 +14,12 @@ import { useParams } from "react-router-dom";
 import { setChat, Selector as chatSelector } from "../features/chatSlice";
 import { Selector as userSelector } from "../features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { Selector as socketSelector } from "../features/socketSlice";
 import requests from "../handleRequests.js";
 function Chat() {
   const width = useWidth();
   const history = useHistory();
+  const socket = useSelector(socketSelector);
   const [input, setInput] = useState("");
   const [toggleEmoji, setToggleEmoji] = useState(false);
   const user = useSelector(userSelector);
@@ -41,8 +43,13 @@ function Chat() {
 
   const sendMessage = (e) => {
     e.preventDefault();
+
     requests
       .sendMessage(chatId.chatId, input, user._id)
+      .then((message) => {
+        socket.emit("send__message", message);
+        setMessages([...messages, message.message]);
+      })
       .catch((err) => console.log(err));
     setInput("");
   };
@@ -55,7 +62,18 @@ function Chat() {
         setMessages(data.messages);
       })
       .catch((err) => console.log(err));
+
+    socket.emit("join__room", chatId.chatId);
   }, []);
+
+  useEffect(() => {
+    if (socket == null) return;
+    socket.on("recive__message", (message) => {
+      console.log(message);
+      setMessages([...messages, message.message]);
+    });
+    return () => socket.off("recive__message");
+  }, [messages]);
 
   return (
     <div className="chat">

@@ -1,5 +1,5 @@
 import { Avatar } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import "./SidebarChat.css";
 import requests from "../handleRequests.js";
@@ -8,6 +8,7 @@ import { Selector as userSelector } from "../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 function SidebarChat({ user2, id, name, count, image, email, type }) {
   const history = useHistory();
+  const render = useRef(0);
   const [error, setError] = useState("");
   const user = useSelector(userSelector);
   const dispatch = useDispatch();

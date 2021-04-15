@@ -78,6 +78,8 @@ chatRouter.get("/:chatID", (req, res, next) => {
     .catch((err) => next(err));
 });
 
+//send messages using socket io
+
 chatRouter.route("/:chatID/messages").post((req, res, next) => {
   Chats.findById(req.params.chatID)
     .then(
@@ -90,7 +92,7 @@ chatRouter.route("/:chatID/messages").post((req, res, next) => {
               (chat) => {
                 res.statusCode = 200;
                 res.setHeader("Content-Type", "application/json");
-                res.json({ messages: chat.messages });
+                res.json({ message: chat.messages[chat.messages.length - 1] });
               },
               (err) => next(err)
             )

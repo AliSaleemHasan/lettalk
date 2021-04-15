@@ -6,13 +6,17 @@ import useWidth from "./Components/useWidth";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Info from "./Components/Info.js";
 import Login from "./Components/Login.js";
-import { Selector, setUser } from "./features/userSlice";
+import { Selector as userSelector, setUser } from "./features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { Selector as socketSelector, setSocket } from "./features/socketSlice";
 import requests from "./handleRequests";
+import { io } from "socket.io-client";
 function App() {
+  const user = useSelector(userSelector);
   const width = useWidth();
-  const user = useSelector(Selector);
+  const socket = useSelector(socketSelector);
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (!user) {
       requests.getUser().then((user) => {
@@ -20,6 +24,16 @@ function App() {
       });
     }
   }, []);
+
+  useEffect(() => {
+    let socket;
+    if (!user) dispatch(setSocket(null));
+    else {
+      socket = io({ query: { id: user._id } });
+      dispatch(setSocket(socket));
+    }
+    return () => socket?.close();
+  }, [user]);
   return width > 786 ? (
     <div className="app">
       {!user ? (
