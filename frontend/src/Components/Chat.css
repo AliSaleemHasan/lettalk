@@ -75,7 +75,9 @@
 
 .chat__footer input {
   height: 80%;
+  width: 100%;
   flex: 1;
+  max-height: 40vh;
   border: none;
   outline: none;
 }
@@ -91,6 +93,11 @@
   font-family: sans-serif;
 }
 
+@media (min-width: 768px) {
+  .NVM {
+    display: none;
+  }
+}
 @keyframes emoji_animation {
   from {
     transform: scale(0);

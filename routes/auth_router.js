@@ -10,6 +10,8 @@ router.get(
   "/github/loggedIn",
   passport.authenticate("github", { failureRedirect: "/auth/failed" }),
   (req, res) => {
+    let token = authenticate.getToken({ id: req.user._id });
+    res.cookie("UTOF", token, { httpOnly: true, sameSite: "lax" });
     res.redirect("http://localhost:3000/");
   }
 );
@@ -27,8 +29,12 @@ router.get(
   "/google/loggedIn",
   passport.authenticate("google", {
     failureRedirect: "/auth/failed",
-    successRedirect: "http://localhost:3000/",
-  })
+  }),
+  (req, res, next) => {
+    let token = authenticate.getToken({ id: req.user._id });
+    res.cookie("UTOF", token, { httpOnly: true, sameSite: "lax" });
+    res.redirect("http://localhost:3000/");
+  }
 );
 
 router.get("/failed", (req, res, next) => {

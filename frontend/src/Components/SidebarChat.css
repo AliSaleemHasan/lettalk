@@ -1,9 +1,10 @@
 /* sidebar chat */
 .sidebarChat {
   padding-top: 10px;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
   display: flex;
   border-bottom: 2px solid #2b3238;
+  overflow-y: hidden;
 }
 
 .sidebarChat:hover {
@@ -39,11 +40,18 @@
 
 .sidebarChat__lastmessage {
   color: #aaa;
+  height: 15px;
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-bottom: 5px;
 }
 
 .sidebarChat__count {
   background-color: #59d986;
   border-radius: 50%;
+  width: 20px;
+  text-align: center;
   padding: 3px;
   color: #f0f2f2;
 }

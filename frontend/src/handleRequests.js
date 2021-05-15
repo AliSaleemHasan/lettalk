@@ -1,6 +1,6 @@
 const request = {
   getUser: async () => {
-    const response = await fetch("/users", {
+    const response = await fetch(`/users/`, {
       method: "GET",
     });
     return response.json();
@@ -16,7 +16,7 @@ const request = {
     return response;
   },
   logout: async () => {
-    const response = await fetch("/users?logout=true", {
+    const response = await fetch("users/?logout=true", {
       method: "GET",
     });
     return response.json();
@@ -37,7 +37,7 @@ const request = {
   },
 
   editUserInfo: async (id, settingName, name, updatedInfo) => {
-    const response = await fetch(`/users/info/${id}?${settingName}=${name}`, {
+    const response = await fetch(`users/info/${id}?${settingName}=${name}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -46,7 +46,7 @@ const request = {
     });
     return response.json();
   },
-  sendMessage: async (id, message, sender) => {
+  sendMessage: async (id, message, sender, unseened) => {
     const response = await fetch(`/chats/${id}/messages`, {
       method: "POST",
       headers: {
@@ -70,7 +70,7 @@ const request = {
     return response.json();
   },
   searchForUsers: async (query) => {
-    const response = await fetch("/users/search", {
+    const response = await fetch("users/search", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,14 +79,30 @@ const request = {
     });
     return response.json();
   },
-  addChat: async (id, user2) => {
-    const response = await fetch(`/chats/user/${id}`, {
+  addChat: async (user1, user2) => {
+    const response = await fetch(`chats/user/${user1}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ user2 }),
+      body: JSON.stringify({ user1, user2 }),
     });
+    return response.json();
+  },
+
+  setUserState: async (id, status, lastseen) => {
+    lastseen = lastseen || Date.now();
+    const response = await fetch(`users/userState/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status,
+        lastseen,
+      }),
+    });
+
     return response.json();
   },
 };

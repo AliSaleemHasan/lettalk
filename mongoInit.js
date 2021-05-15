@@ -6,6 +6,7 @@ const path = require("path");
 exports.connection = mongoose
   .connect(process.env.MONGO_URL, {
     useUnifiedTopology: true,
+    useCreateIndex: true,
     useNewUrlParser: true,
   })
   .then((db) => console.log("connected correctly to db"))

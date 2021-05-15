@@ -14,7 +14,7 @@ function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
     request
-      .login("/users/login", password, email)
+      .login("users/login", password, email)
       .then((response) => response.json())
       .then((data) => {
         dispatch(setUser(data.user));
@@ -24,7 +24,7 @@ function Login() {
   const handleSignup = (e) => {
     e.preventDefault();
     request
-      .signup("/users/signup", username, password, email)
+      .signup("users/signup", username, password, email)
       .then((response) => response.json())
       .then((data) => {
         dispatch(setUser(data.user));
@@ -109,6 +109,7 @@ function Login() {
               {signup && (
                 <input
                   value={username}
+                  required
                   type="text"
                   placeholder="Enter Username.."
                   onChange={(e) => setusername(e.target.value)}
@@ -117,6 +118,7 @@ function Login() {
               )}
               <input
                 value={email}
+                required
                 type="email"
                 placeholder="Enter Email.."
                 onChange={(e) => setEmail(e.target.value)}
@@ -124,6 +126,7 @@ function Login() {
               />
               <input
                 value={password}
+                required
                 type="password"
                 placeholder="Enter Password"
                 name="password"

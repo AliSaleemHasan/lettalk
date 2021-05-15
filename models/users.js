@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-
 const user = new Schema({
   email: {
     type: String,
@@ -38,6 +37,21 @@ const user = new Schema({
     type: String,
     default: "",
   },
+
+  // chatsInfo: [
+  //   {
+  //     chatID: {
+  //       type: Schema.Types.ObjectId,
+  //       required: true,
+  //       ref: "chat",
+  //     },
+  //     otherUser: {
+  //       type: Schema.Types.ObjectId,
+  //       required: true,
+  //       ref: "user",
+  //     },
+  //   },
+  // ],
 });
 
 module.exports = mongoose.model("user", user);

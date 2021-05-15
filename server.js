@@ -1,16 +1,16 @@
 require("dotenv").config();
 const http = require("http");
 const express = require("express");
-const session = require("express-session");
 const passport = require("passport");
 const socket = require("socket.io");
+const cookieParesr = require("cookie-parser");
 
 //mongoose connection;
 const { uploadStorge, connection, upload } = require("./mongoInit");
 ("multer-gridfs-storage");
 const path = require("path");
 //routes
-const userRouter = require("./routes/user_router");
+const { userRouter, setUserState } = require("./routes/user_router");
 const authRouter = require("./routes/auth_router");
 const chatRouter = require("./routes/chat_router");
 
@@ -19,15 +19,8 @@ const server = http.createServer(app);
 const io = socket(server);
 
 app.use(express.json());
-app.use(
-  session({
-    secret: "fuck fear drank bear",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+app.use(cookieParesr());
 app.use(passport.initialize());
-app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
@@ -35,18 +28,39 @@ app.get("/", (req, res) => {
   else res.send("hello from server side ");
 });
 
+//socket io configuration
+
 io.on("connection", (socket) => {
-  console.log("user connected");
   const id = socket.handshake.query.id;
   socket.join(id);
 
-  socket.on("join__room", (room_id) => {
-    socket.join(room_id);
-    socket.on("send__message", (message) => {
-      socket.broadcast.to(`${room_id}`).emit("recive__message", message);
-    });
+  setUserState(id, true);
+
+  socket.on("send__message", (otherUserID, message, index) => {
+    console.log(message);
+    console.log(index);
+    console.log(otherUserID);
+    socket.in(otherUserID).emit("recive__message", message);
+    socket.emit("recive__message", message);
+  });
+
+  socket.on("typing", (otherUserID) => {
+    socket.to(otherUserID).emit("is__typing");
+  });
+
+  socket.on("not__typing", (otherUserID) => {
+    socket.broadcast.to(otherUserID).emit("isNot__typing");
+  });
+
+  socket.on("add__room", (chat, otherUserID) => {
+    socket.to(otherUserID).emit("accept__addRoom", chat);
+  });
+
+  socket.on("disconnect", (reason) => {
+    setUserState(id, false, Date.now());
   });
 });
+
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/chats", chatRouter);

@@ -5,10 +5,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import store from "./app /store";
 import { Provider } from "react-redux";
+import { SocketProvider } from "./SocketProvider";
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <SocketProvider>
+        <App />
+      </SocketProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

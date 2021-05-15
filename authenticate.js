@@ -2,6 +2,8 @@ const passport = require("passport");
 const githubStrategy = require("passport-github2").Strategy;
 const google_straregy = require("passport-google-oauth2").Strategy;
 const User = require("./models/users");
+const jwt = require("jsonwebtoken");
+const secret = "aoweifnowaiefnowaiefnwafeA WEFWAIPEFNWAE";
 
 //serialize and deserialize user into session
 passport.serializeUser(function (user, done) {
@@ -13,6 +15,28 @@ exports.deserialize = passport.deserializeUser(function (id, done) {
     done(err, user);
   });
 });
+
+//get jwt
+
+exports.getToken = (payload) => {
+  return jwt.sign(payload, secret, { expiresIn: "5d" });
+};
+
+//verify user middleware using cookies and jwt
+
+exports.verifyJwt = (req, res, next) => {
+  const token = req.cookies && req.cookies.UTOF;
+  if (token) {
+    jwt.verify(token, secret, (err, user) => {
+      if (err) return res.status(401).json({ error: "user not found!" });
+      req.user = user.id;
+      next();
+    });
+  } else {
+    res.status(200).json({ success: false });
+  }
+};
+
 //github strategy
 exports.gitStrategy = passport.use(
   new githubStrategy(
@@ -55,13 +79,13 @@ exports.googleStrategy = passport.use(
       callbackURL: "http://localhost:8080/auth/google/loggedIn",
     },
     (accessToken, refreshToken, profile, done) => {
-      User.findOne({ email: profile.emails[0] + profile.id + "@chaty.com" })
+      User.findOne({ email: profile.emails[0] })
         .then((user, err) => {
           if (err) done(err);
           else if (user) done(null, user);
           else {
             let user = new User({
-              email: profile.emails[0] + profile.id + "@chaty.com",
+              email: profile.emails[0],
             });
             user.username = profile.displayName;
             user.bio = "Hey there,I am using Chaty!";
