@@ -1,7 +1,5 @@
-const { ObjectId } = require("bson");
 const express = require("express");
 const Chats = require("../models/Chats");
-const User = require("../models/users");
 const chatRouter = express.Router();
 const authenticate = require("../authenticate");
 chatRouter.use(express.json());
@@ -18,7 +16,7 @@ chatRouter
       .populate("user2")
       .then(
         (chats) => {
-          const chatsCP = chats;
+          let chatsCP = chats;
           chatsCP.forEach((chat) => {
             chat.messages = chat.messages[chat.messages.length - 1];
           });
@@ -63,7 +61,6 @@ chatRouter
   });
 
 chatRouter.get("/:chatID", authenticate.verifyJwt, (req, res, next) => {
-  console.log(req.params.chatID);
   Chats.findById(req.params.chatID)
     .populate("user1")
     .populate("user2")

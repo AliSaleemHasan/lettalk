@@ -26,13 +26,14 @@ function Chat() {
   const user = useSelector(userSelector);
   const chat = useSelector(chatSelector);
   const [messages, setMessages] = useState([]);
-
   const dispatch = useDispatch();
   const params = useParams();
+
   const gotoSidebar = (e) => {
     e.preventDefault();
     history.push("/");
   };
+
   const onEmojiClick = (e, emoji) => {
     e.preventDefault();
     input.current.value = input.current.value + emoji.emoji;
@@ -71,27 +72,21 @@ function Chat() {
       : socket.emit("not__typing", otherUserID);
   };
 
+  //get chat if it is null in redux and save messages in messages state
   useEffect(() => {
     if (!socket || (!user && !chat)) return;
 
-    if (chat && chat._id === params.chatId) {
-      chat?.user1?._id == user._id
-        ? setOtherUserID(chat.user2?._id)
-        : setOtherUserID(chat.user1?._id);
+    requests
+      .getChat(params.chatId)
+      .then((data) => {
+        dispatch(setChat(data.chat));
 
-      setMessages(chat.messages);
-    } else
-      requests
-        .getChat(params.chatId)
-        .then((data) => {
-          dispatch(setChat(data.chat));
-
-          data?.chat.user1?._id == user._id
-            ? setOtherUserID(data?.chat.user2?._id)
-            : setOtherUserID(data?.chat.user1?._id);
-          setMessages(data.chat.messages);
-        })
-        .catch((err) => console.log(err));
+        data?.chat.user1?._id == user._id
+          ? setOtherUserID(data?.chat.user2?._id)
+          : setOtherUserID(data?.chat.user1?._id);
+        setMessages(data.chat.messages);
+      })
+      .catch((err) => console.log(err));
 
     socket.emit("join__room", params.chatId);
   }, [socket, params.chatId]);
@@ -119,8 +114,6 @@ function Chat() {
     if (socket == null) return;
 
     const setReceivedMessage = (message) => {
-      console.log(message);
-      console.log("fuck");
       setMessages([...messages, message]);
     };
     socket.on("recive__message", setReceivedMessage);

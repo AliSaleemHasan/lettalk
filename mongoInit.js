@@ -4,7 +4,7 @@ const GridFsStorage = require("multer-gridfs-storage");
 const path = require("path");
 //mongoose connection
 exports.connection = mongoose
-  .connect(process.env.MONGO_URL, {
+  .connect(process.env.MONGO_URL || "mongodb://localhost:27017/todoApp", {
     useUnifiedTopology: true,
     useCreateIndex: true,
     useNewUrlParser: true,

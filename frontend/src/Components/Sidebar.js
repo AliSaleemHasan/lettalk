@@ -20,7 +20,6 @@ function Sidebar() {
   const user = useSelector(Selector);
   const dispatch = useDispatch();
   const [toggleSettings, setToggleSettings] = useState(false);
-  // const [searchQuery, setSearchQuery] = useState("");
   const searchQuery = useRef("");
   const [searchedUsers, setSearchedUsers] = useState([]);
   const [userList, setUserList] = useState([]);
@@ -53,8 +52,9 @@ function Sidebar() {
   useEffect(() => {
     if (socket == null) return;
     const setReceivedMessage = (message, index) => {
-      const effectedChat = userList[index];
-      console.log(effectedChat);
+      const chats = userList;
+      chats[index].messages[0] = message;
+      setUserList(chats);
     };
     socket.on("recive__message", setReceivedMessage);
 
@@ -137,7 +137,7 @@ function Sidebar() {
 
         <div className="sidebar__rightChats">
           {isSearching
-            ? searchedUsers?.map((resultUser, index) => (
+            ? searchedUsers?.map((resultUser) => (
                 <SidebarChat
                   index={userList.length}
                   key={resultUser._id}
@@ -155,7 +155,7 @@ function Sidebar() {
                       index={index}
                       count={chat.numOfUnseened}
                       id={chat._id}
-                      lastMessage={chat.lastMessage}
+                      lastMessage={chat.messages[0]}
                       image={chat.user1.image}
                       key={chat._id}
                       name={chat.user1.username}
@@ -167,11 +167,12 @@ function Sidebar() {
                     <SidebarChat
                       index={index}
                       count={chat.numOfUnseened}
-                      lastMessage={chat.lastMessage}
+                      lastMessage={chat.messages[0]}
                       id={chat._id}
                       image={chat.user2.image}
                       key={chat._id}
                       name={chat.user2.username}
+                      isTyping={isTyping}
                     />
                   );
               })}

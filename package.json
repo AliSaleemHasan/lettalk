@@ -4,6 +4,9 @@
   "description": "mern stack chat application ",
   "main": "server.js",
   "scripts": {
+    "build": "cd frontend && npm run build",
+    "client-install": "cd frontend && npm install",
+    "heroku-postbuild": "npm run client-install && npm run build",
     "start": "node server.js",
     "server": "nodemon server.js --ignore client",
     "test": "echo \"Error: no test specified\" && exit 1"

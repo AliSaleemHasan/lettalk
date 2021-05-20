@@ -4,12 +4,13 @@ import IconButton from "@material-ui/core/IconButton";
 import Edit from "@material-ui/icons/Edit";
 import { Selector, setUser } from "../features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
-
 import requests from "../handleRequests.js";
 
 function Settings({ type, name, Icon, settingName }) {
   const user = useSelector(Selector);
   const dispatch = useDispatch();
+
+  //edit user information and save it to database
   const editInfo = () => {
     let updatedInfo = prompt(
       "Please edit bellow information or click cancle",

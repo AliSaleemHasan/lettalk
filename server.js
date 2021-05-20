@@ -5,14 +5,15 @@ const passport = require("passport");
 const socket = require("socket.io");
 const cookieParesr = require("cookie-parser");
 
+const port = process.env.PORT || 8080;
 //mongoose connection;
-const { uploadStorge, connection, upload } = require("./mongoInit");
-("multer-gridfs-storage");
+
 const path = require("path");
 //routes
 const { userRouter, setUserState } = require("./routes/user_router");
 const authRouter = require("./routes/auth_router");
 const chatRouter = require("./routes/chat_router");
+const frontRouter = require("./routes/frontendrouter");
 
 const app = express();
 const server = http.createServer(app);
@@ -24,7 +25,7 @@ app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  if (req.user) res.send("fuck you " + req.user.username);
+  if (req.user) res.send(req.user.username);
   else res.send("hello from server side ");
 });
 
@@ -37,11 +38,8 @@ io.on("connection", (socket) => {
   setUserState(id, true);
 
   socket.on("send__message", (otherUserID, message, index) => {
-    console.log(message);
-    console.log(index);
-    console.log(otherUserID);
-    socket.in(otherUserID).emit("recive__message", message);
-    socket.emit("recive__message", message);
+    socket.in(otherUserID).emit("recive__message", message, index);
+    socket.emit("recive__message", message, index);
   });
 
   socket.on("typing", (otherUserID) => {
@@ -61,6 +59,10 @@ io.on("connection", (socket) => {
   });
 });
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("./frontend/build"));
+  app.use("/", frontRouter);
+}
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/chats", chatRouter);
@@ -73,6 +75,6 @@ app.use((err, req, res, next) => {
   let errStatus = err.status || 500;
   res.status(errStatus).send(output);
 });
-server.listen(process.env.PORT, () => {
-  console.log(`connected correctly to http://localhost:${process.env.PORT}`);
+server.listen(port, () => {
+  console.log(`connected correctly to http://localhost:${port}`);
 });

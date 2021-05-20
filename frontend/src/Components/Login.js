@@ -10,14 +10,16 @@ function Login() {
   const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
   const [loginMethod, setloginMethod] = useState(0);
-
+  const [error, setError] = useState("");
   const handleLogin = (e) => {
     e.preventDefault();
     request
       .login("users/login", password, email)
       .then((response) => response.json())
       .then((data) => {
-        dispatch(setUser(data.user));
+        if (data.status == "failed")
+          setError("incorrect username or password!!!");
+        else dispatch(setUser(data.user));
       });
   };
 
@@ -27,6 +29,14 @@ function Login() {
       .signup("users/signup", username, password, email)
       .then((response) => response.json())
       .then((data) => {
+        if (!data.user) {
+          if (
+            data.message ==
+            'E11000 duplicate key error collection: chatApp.users index: email_1 dup key: { : "ali@hasan.com" }'
+          )
+            setError("email already exist!!");
+          else setError("please write stronger password!!");
+        }
         dispatch(setUser(data.user));
       });
   };
@@ -48,7 +58,6 @@ function Login() {
     <div className="login">
       <div className="login__header">
         <img src="/defaults/Chaty.png" width="75" height="75" alt="logo" />
-        {signup && <button>next</button>}
       </div>
       <div className="login__container">
         <h1 className="login__containerTitle">
@@ -70,20 +79,6 @@ function Login() {
             </button>
           </div>
         )}
-        {/* <h2>sing in</h2>
-        <p>Note:</p>
-        <h3 className="note">
-          sign in via Gmail or Github is not dengerous ! <br />
-          We can not take your password or hack you if you sign in <br />
-        </h3>
-        <h3 className="note">
-          Please do not enter real email when sign in using Email and Password{" "}
-          <br />
-          you can enter any email like : <span>name@example.com</span>
-          <br />
-          ,for what ever reason do not enter your real password or email cause
-          this web app is just a demo!!!!!!!
-        </h3> */}
 
         {loginMethod == 1 && (
           <div className="contianer__info">
@@ -105,6 +100,7 @@ function Login() {
               you can enter any email like : <span>name@example.com</span>
               <br />
             </h3>
+            <p className="error">{error}</p>
             <form onSubmit={signup ? handleSignup : handleLogin}>
               {signup && (
                 <input

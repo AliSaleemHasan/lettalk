@@ -22,31 +22,6 @@ router.get("/", authenticate.verifyJwt, (req, res) => {
   }
 });
 
-// router.get("/", authenticate.verifyJwt, (req, res) => {
-//   if (req.user && !req.query.logout) {
-//     User.findById(req.user)
-//       .populate("chatsInfo.chatID")
-//       .populate("chatsInfo.otherUser")
-//       .then(
-//         (user) => {
-//           const { password, ...other } = user._doc;
-
-//           res.statusCode = 200;
-//           res.setHeader("Content-Type", "application/json");
-//           res.json({
-//             success: true,
-//             user: other,
-//           });
-//         },
-//         (err) => next(err)
-//       )
-//       .catch((err) => next(err));
-//   } else {
-//     res.clearCookie("UTOF");
-//     res.status(200).json({ success: true });
-//   }
-// });
-//
 router.post("/signup", (req, res, next) => {
   let hash = bcrypt.hashSync(req.body.password, 10);
   req.body.password = hash;
@@ -79,34 +54,6 @@ router.post("/login", (req, res, next) => {
     }
   });
 });
-
-//add chat Info to user when make a new chat
-
-// router.post("/newChat", (req, res, next) => {
-//   User.findById(req.body.id)
-//     .then(
-//       (user) => {
-//         user.chatsInfo.push(req.body.info);
-//         user
-//           .save()
-//           .then(
-//             (user) => {
-//               console.log(user);
-
-//               res.statusCode = 200;
-//               res.setHeader("Content-Type", "application/json");
-//               res.json({ success: true, user });
-//             },
-//             (err) => console.log(err)
-//           )
-//           .catch((err) => console.log(err));
-//       },
-//       (err) => console.log(err)
-//     )
-//     .catch((err) => console.log(err));
-// });
-
-//get user chats
 
 //change profile picture
 router.post(
