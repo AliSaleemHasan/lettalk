@@ -43,7 +43,9 @@ exports.gitStrategy = passport.use(
     {
       clientID: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
-      callbackURL: "http://localhost:8080/auth/github/loggedIn",
+      callbackURL:
+        process.env.APP_URL + "/auth/github/loggedIn" ||
+        "http://localhost:8080/auth/github/loggedIn",
     },
     (accessToken, refreshToken, profile, done) => {
       User.findOne({ email: profile.username + profile.id + "@chaty.com" })
@@ -76,7 +78,9 @@ exports.googleStrategy = passport.use(
     {
       clientID: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
-      callbackURL: "http://localhost:8080/auth/google/loggedIn",
+      callbackURL:
+        process.env.APP_URL + "/auth/google/loggedIn" ||
+        "http://localhost:8080/auth/google/loggedIn",
     },
     (accessToken, refreshToken, profile, done) => {
       User.findOne({ email: profile.emails[0] })

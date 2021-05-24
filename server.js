@@ -24,10 +24,10 @@ app.use(cookieParesr());
 app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  if (req.user) res.send(req.user.username);
-  else res.send("hello from server side ");
-});
+// app.get("/", (req, res) => {
+//   if (req.user) res.send(req.user.username);
+//   else res.send("hello from server side ");
+// });
 
 //socket io configuration
 

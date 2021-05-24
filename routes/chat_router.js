@@ -18,7 +18,9 @@ chatRouter
         (chats) => {
           let chatsCP = chats;
           chatsCP.forEach((chat) => {
-            chat.messages = chat.messages[chat.messages.length - 1];
+            if (chat.messages.length > 0)
+              chat.messages = chat.messages[chat.messages.length - 1];
+            else chat.messages[0] = ".";
           });
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");

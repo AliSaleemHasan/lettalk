@@ -44,6 +44,7 @@ function Sidebar() {
     requests
       .searchForUsers(searchQuery.current.value)
       .then((data) => {
+        // console.log(data);
         setSearchedUsers(data);
       })
       .catch((err) => console.log(err));
@@ -94,6 +95,7 @@ function Sidebar() {
     requests
       .getAllChats(user._id)
       .then((data) => {
+        console.log(data.chats);
         setUserList(data.chats);
       })
       .catch((err) => console.log(err));
@@ -155,7 +157,7 @@ function Sidebar() {
                       index={index}
                       count={chat.numOfUnseened}
                       id={chat._id}
-                      lastMessage={chat.messages[0]}
+                      lastMessage={chat?.messages[0] || "_"}
                       image={chat.user1.image}
                       key={chat._id}
                       name={chat.user1.username}
@@ -167,7 +169,7 @@ function Sidebar() {
                     <SidebarChat
                       index={index}
                       count={chat.numOfUnseened}
-                      lastMessage={chat.messages[0]}
+                      lastMessage={chat?.messages[0] || "_"}
                       id={chat._id}
                       image={chat.user2.image}
                       key={chat._id}

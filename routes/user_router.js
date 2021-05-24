@@ -62,7 +62,6 @@ router.post(
   uploadStorge.single("file"),
   (req, res, next) => {
     User.findById(req.params.id).then((user) => {
-      console.log(user.image);
       if (user.image && fs.existsSync(user.image)) fs.unlinkSync(user.image);
       user.image = "/uploads/" + req.file.filename;
 
@@ -133,7 +132,6 @@ router.post("/search", authenticate.verifyJwt, (req, res, next) => {
 
 //set user state (online or offline)
 exports.setUserState = async (userID, status, lastseen) => {
-  console.log(status);
   let user = await User.findById(userID);
   if (user) {
     let newState = user.state;

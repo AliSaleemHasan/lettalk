@@ -12,7 +12,7 @@ router.get(
   (req, res) => {
     let token = authenticate.getToken({ id: req.user._id });
     res.cookie("UTOF", token, { httpOnly: true, sameSite: "lax" });
-    res.redirect("http://localhost:3000/");
+    res.redirect(process.env.APP_URL || "http://localhost:3000/");
   }
 );
 
@@ -33,7 +33,7 @@ router.get(
   (req, res, next) => {
     let token = authenticate.getToken({ id: req.user._id });
     res.cookie("UTOF", token, { httpOnly: true, sameSite: "lax" });
-    res.redirect("http://localhost:3000/");
+    res.redirect(process.env.APP_URL || "http://localhost:3000/");
   }
 );
 

@@ -78,7 +78,7 @@ function SidebarChat({
           <p className="sidebarChat__lastmessage">{email}</p>
         ) : (
           <p className="sidebarChat__lastmessage">
-            {isTyping ? "Typing" : lastMessage?.message}
+            {isTyping ? "Typing" : lastMessage?.message || lastMessage}
           </p>
         )}
 
