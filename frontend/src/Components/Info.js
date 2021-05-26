@@ -6,13 +6,15 @@ import Person from "@material-ui/icons/Person";
 import Email from "@material-ui/icons/Email";
 import { Info as Inf } from "@material-ui/icons";
 import { IconButton } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { Selector as userSelector } from "../features/userSlice";
 import { Selector as chatSelector } from "../features/chatSlice";
 import { useSelector } from "react-redux";
 
 function Info() {
   const history = useHistory();
+  const params = useParams();
+
   const chat = useSelector(chatSelector);
   const [otherUser, setOtherUser] = useState(null);
   const user = useSelector(userSelector);
@@ -25,7 +27,7 @@ function Info() {
   }, []);
   const returntoChat = (e) => {
     e.preventDefault();
-    history.push(`/chat/${chat._id}`);
+    history.push(`/chat/${chat._id}/${params.index}`);
   };
   return (
     <div className="info">

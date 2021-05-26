@@ -14,6 +14,15 @@
   border-bottom: 2px solid #2b3238;
 }
 
+.header__right {
+  min-width: 50px;
+}
+.header__right,
+.message__edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .chat__header,
 .chat__headerStatus,
 .header__left {
@@ -39,6 +48,7 @@
 .status {
   font-size: 12px;
   color: #555;
+  max-width: 100px;
 }
 
 .chat__status {
@@ -93,7 +103,7 @@
   font-family: sans-serif;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 786px) {
   .NVM {
     display: none;
   }

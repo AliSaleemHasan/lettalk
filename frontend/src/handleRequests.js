@@ -16,7 +16,7 @@ const request = {
     return response;
   },
   logout: async () => {
-    const response = await fetch("users/?logout=true", {
+    const response = await fetch("/users?logout=true", {
       method: "GET",
     });
     return response.json();
@@ -103,6 +103,35 @@ const request = {
       }),
     });
 
+    return response.json();
+  },
+  uploadImage: async (id, imageUrl) => {
+    const response = await fetch(`/users/upload/image/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        imageUrl,
+      }),
+    });
+    return response.json();
+  },
+  editORdeleteMessage: async (chatid, messageid, message) => {
+    let response;
+    if (message) {
+      response = await fetch(`/chats/${chatid}/messages/${messageid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message }),
+      });
+    } else {
+      response = await fetch(`/chats/${chatid}/messages/${messageid}`, {
+        method: "DELETE",
+      });
+    }
     return response.json();
   },
 };

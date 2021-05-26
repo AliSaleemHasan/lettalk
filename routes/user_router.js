@@ -17,6 +17,7 @@ router.get("/", authenticate.verifyJwt, (req, res) => {
       })
       .catch((err) => console.log(err));
   } else {
+    console.log("logout");
     res.clearCookie("UTOF");
     res.status(200).json({ success: true });
   }
@@ -31,7 +32,11 @@ router.post("/signup", (req, res, next) => {
     .save()
     .then((user) => {
       let token = authenticate.getToken({ id: user._id });
-      res.cookie("UTOF", token, { httpOnly: true, sameSite: "lax" });
+      res.cookie("UTOF", token, {
+        maxAge: 1000 * 60 * 60 * 24 * 3,
+        httpOnly: true,
+        sameSite: "lax",
+      });
       req.statusCode = 200;
       res.setHeader("Content-type", "application/json");
       res.json({ success: true, user });
@@ -47,7 +52,11 @@ router.post("/login", (req, res, next) => {
       res.json({ status: "failed" });
     } else {
       let token = authenticate.getToken({ id: user._id });
-      res.cookie("UTOF", token, { httpOnly: true, sameSite: "lax" });
+      res.cookie("UTOF", token, {
+        maxAge: 1000 * 60 * 60 * 24 * 3,
+        httpOnly: true,
+        sameSite: "lax",
+      });
       req.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
       res.json({ status: "Success", user });
@@ -56,26 +65,22 @@ router.post("/login", (req, res, next) => {
 });
 
 //change profile picture
-router.post(
-  "/upload/image/:id",
-  authenticate.verifyJwt,
-  uploadStorge.single("file"),
-  (req, res, next) => {
-    User.findById(req.params.id).then((user) => {
-      if (user.image && fs.existsSync(user.image)) fs.unlinkSync(user.image);
-      user.image = "/uploads/" + req.file.filename;
+router.post("/upload/image/:id", authenticate.verifyJwt, (req, res, next) => {
+  User.findById(req.params.id).then((user) => {
+    // if (user.image && fs.existsSync(user.image)) fs.unlinkSync(user.image);
+    // user.image = "/uploads/" + req.file.filename;
+    user.image = req.body.imageUrl;
 
-      user
-        .save()
-        .then((user) => {
-          req.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json({ success: true, user });
-        })
-        .catch((err) => next(err));
-    });
-  }
-);
+    user
+      .save()
+      .then((user) => {
+        req.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json({ success: true, user });
+      })
+      .catch((err) => next(err));
+  });
+});
 
 //change user info from setting page
 router.put("/info/:id", authenticate.verifyJwt, (req, res, next) => {

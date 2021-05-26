@@ -13,12 +13,12 @@ import { useDispatch, useSelector } from "react-redux";
 import requests from "../handleRequests.js";
 import Close from "@material-ui/icons/Close";
 import { useSocket } from "../SocketProvider.js";
+import { useHistory } from "react-router-dom";
 function Sidebar() {
-  console.log("sidebar render");
   const [socket] = useSocket();
-  const [isTyping, setIsTyping] = useState(false);
   const user = useSelector(Selector);
   const dispatch = useDispatch();
+  const history = useHistory();
   const [toggleSettings, setToggleSettings] = useState(false);
   const searchQuery = useRef("");
   const [searchedUsers, setSearchedUsers] = useState([]);
@@ -29,6 +29,7 @@ function Sidebar() {
   };
   const logout = (e) => {
     e.preventDefault();
+    history.push("/");
     serverLogout();
     dispatch(setUser(null));
   };
@@ -44,7 +45,6 @@ function Sidebar() {
     requests
       .searchForUsers(searchQuery.current.value)
       .then((data) => {
-        // console.log(data);
         setSearchedUsers(data);
       })
       .catch((err) => console.log(err));
@@ -65,24 +65,6 @@ function Sidebar() {
   //to get room when ever other person add it to its chat!
 
   useEffect(() => {
-    if (socket == null) return;
-    socket.on("is__typing", () => {
-      setIsTyping(true);
-    });
-
-    return () => socket.off("is__typing");
-  }, [socket]);
-
-  useEffect(() => {
-    if (!socket) return;
-    socket.on("isNot__typing", () => {
-      setIsTyping(false);
-    });
-
-    return () => socket.off("isNot__typing");
-  }, [socket]);
-
-  useEffect(() => {
     if (!socket) return;
     socket.once("accept__addRoom", (room) => {
       setUserList([...userList, room]);
@@ -95,8 +77,7 @@ function Sidebar() {
     requests
       .getAllChats(user._id)
       .then((data) => {
-        console.log(data.chats);
-        setUserList(data.chats);
+        if (data.chats) setUserList(data.chats);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -141,7 +122,7 @@ function Sidebar() {
           {isSearching
             ? searchedUsers?.map((resultUser) => (
                 <SidebarChat
-                  index={userList.length}
+                  index={userList?.length || 0}
                   key={resultUser._id}
                   name={resultUser.username}
                   email={resultUser.email}
@@ -157,11 +138,10 @@ function Sidebar() {
                       index={index}
                       count={chat.numOfUnseened}
                       id={chat._id}
-                      lastMessage={chat?.messages[0] || "_"}
+                      lastMessage={chat?.messages[0] || "."}
                       image={chat.user1.image}
                       key={chat._id}
                       name={chat.user1.username}
-                      isTyping={isTyping}
                     />
                   );
                 else
@@ -169,12 +149,11 @@ function Sidebar() {
                     <SidebarChat
                       index={index}
                       count={chat.numOfUnseened}
-                      lastMessage={chat?.messages[0] || "_"}
+                      lastMessage={chat?.messages[0] || "."}
                       id={chat._id}
                       image={chat.user2.image}
                       key={chat._id}
                       name={chat.user2.username}
-                      isTyping={isTyping}
                     />
                   );
               })}

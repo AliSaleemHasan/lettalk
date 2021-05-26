@@ -53,8 +53,13 @@ function SidebarChat({
     requests
       .addChat(user._id, user2)
       .then((data) => {
-        socket.emit("add__room", data.chat, user2);
-        if (data.success) return history.push(`/chat/${data.chat._id}`);
+        let room = data.chat;
+        room.user1 = user;
+
+        socket.emit("add__room", room, user2);
+        if (data.success) {
+          return history.push(`/chat/${data.chat._id}/${index}`);
+        }
         setError(data?.message);
       })
       .catch((err) => console.log(err));

@@ -109,4 +109,64 @@ chatRouter
       .catch((err) => next(err));
   });
 
+//delete and edit messages
+chatRouter
+  .route("/:chatID/messages/:messageID")
+  .put((req, res, next) => {
+    Chats.findById(req.params.chatID)
+      .then(
+        (chat) => {
+          if (!chat || !chat.messages.id(req.params.messageID)) {
+            res.statusCode = 404;
+            res.setHeader("Content-Type", "application/json");
+            return res.json({ err: "error !" });
+          }
+
+          chat.messages.id(req.params.messageID).message = req.body.message;
+          chat
+            .save()
+            .then(
+              (chat) => {
+                res.statusCode = 404;
+                res.setHeader("Content-Type", "application/json");
+                res.json({
+                  success: true,
+                  message: chat.messages.id(req.params.messageID),
+                });
+              },
+              (err) => next(err)
+            )
+            .catch((err) => next(err));
+        },
+        (err) => next(err)
+      )
+      .catch((err) => next(err));
+  })
+  .delete(authenticate.verifyJwt, (req, res, next) => {
+    Chats.findById(req.params.chatID)
+      .then(
+        (chat) => {
+          if (!chat || !chat.messages.id(req.params.messageID)) {
+            res.statusCode = 404;
+            res.setHeader("Content-Type", "application/json");
+            return res.json({ err: "chat not found!!!!!!!!!!!!!!" });
+          }
+          chat.messages.id(req.params.messageID).remove();
+          chat
+            .save()
+            .then(
+              (chat) => {
+                res.statusCode = 404;
+                res.setHeader("Content-Type", "application/json");
+                res.json({ success: true });
+              },
+              (err) => next(err)
+            )
+            .catch((err) => next(err));
+        },
+        (err) => next(err)
+      )
+      .catch((err) => next(err));
+  });
+
 module.exports = chatRouter;

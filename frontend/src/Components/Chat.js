@@ -3,7 +3,6 @@ import "./Chat.css";
 import Message from "./Message.js";
 import IconButton from "@material-ui/core/IconButton";
 import Search from "@material-ui/icons/Search";
-import AttachFile from "@material-ui/icons/AttachFile";
 import EmojiEmotions from "@material-ui/icons/EmojiEmotions";
 import Send from "@material-ui/icons/Send";
 import ArrowBack from "@material-ui/icons/ArrowBack";
@@ -14,9 +13,10 @@ import { setChat, Selector as chatSelector } from "../features/chatSlice";
 import { Selector as userSelector } from "../features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import requests from "../handleRequests.js";
+import Edit from "@material-ui/icons/Edit";
+import Delete from "@material-ui/icons/Delete";
 import { useSocket } from "../SocketProvider";
 function Chat() {
-  console.log("chat render");
   const [otherUserID, setOtherUserID] = useState();
   const [isTyping, setIsTyping] = useState(false);
   const history = useHistory();
@@ -28,6 +28,7 @@ function Chat() {
   const [messages, setMessages] = useState([]);
   const dispatch = useDispatch();
   const params = useParams();
+  const [messageToChange, setMessageToChange] = useState({});
 
   const gotoSidebar = (e) => {
     e.preventDefault();
@@ -41,7 +42,7 @@ function Chat() {
 
   const gotoInfo = (e) => {
     e.preventDefault();
-    history.push(`/chat/${chat._id}/${params.index}}/info`);
+    history.push(`/chat/${chat._id}/${params.index}/info`);
   };
 
   const sendMessage = (e) => {
@@ -72,6 +73,45 @@ function Chat() {
       : socket.emit("not__typing", otherUserID);
   };
 
+  const editMessage = (e) => {
+    e.preventDefault();
+    const editedMessage = prompt(
+      "change the message",
+      messageToChange.message?.message
+    );
+    requests
+      .editORdeleteMessage(chat._id, messageToChange.message._id, editedMessage)
+      .then((data) =>
+        socket.emit(
+          "message__editOrdelete",
+          otherUserID,
+          data.message,
+          messageToChange.index,
+          "edit"
+        )
+      )
+      .catch((err) => console.log(err));
+
+    setMessageToChange({});
+  };
+
+  const deleteMessage = (e) => {
+    e.preventDefault();
+    requests
+      .editORdeleteMessage(chat._id, messageToChange.message._id)
+      .then((data) =>
+        socket.emit(
+          "message__editOrdelete",
+          otherUserID,
+          data.message,
+          messageToChange.index,
+          "delete"
+        )
+      )
+      .catch((err) => console.log(err));
+
+    setMessageToChange({});
+  };
   //get chat if it is null in redux and save messages in messages state
   useEffect(() => {
     if (!socket || (!user && !chat)) return;
@@ -90,6 +130,20 @@ function Chat() {
 
     socket.emit("join__room", params.chatId);
   }, [socket, params.chatId]);
+
+  useEffect(() => {
+    if (socket == null) return;
+
+    const setEditedMessage = (message, index, type) => {
+      let messagesCp = [...messages];
+      if (type === "edit") messagesCp.splice(index, 1, message);
+      else messagesCp.splice(index, 1);
+      setMessages(messagesCp);
+    };
+    socket.on("recive__editedMessage", setEditedMessage);
+
+    return () => socket.off("recive__editedMessage", setEditedMessage);
+  }, [socket, messages]);
 
   //for typing effect
   useEffect(() => {
@@ -142,28 +196,43 @@ function Chat() {
               : chat?.user1?.username}
           </p>
           <div className="chat__headerStatus">
-            <p className="chat__status"></p>
+            {/* <p className="chat__status"></p> */}
             <p className="status">
               {isTyping
                 ? "Typing.. "
-                : user.state.status === true
-                ? "Online"
-                : user.state.lastseen}
+                : new Date(user.state.lastseen).toUTCString()}
             </p>
           </div>
         </div>
         <div className="header__right">
-          <IconButton>
-            <AttachFile />
-          </IconButton>
+          {messageToChange.message && (
+            <div className="message__edit">
+              <IconButton onClick={editMessage} color="primary">
+                <Edit />
+              </IconButton>
+
+              <IconButton onClick={deleteMessage} color="secondary">
+                <Delete />
+              </IconButton>
+            </div>
+          )}
           <IconButton>
             <Search />
           </IconButton>
         </div>
       </div>
       <div className="chat__body">
-        {messages?.map((message) => (
-          <div key={message._id} ref={messageRef}>
+        {messages?.map((message, index) => (
+          <div
+            onClick={() => {
+              if (message.sender !== user._id) return;
+              if (!messageToChange.message) {
+                setMessageToChange({ message, index });
+              } else setMessageToChange({});
+            }}
+            key={message._id}
+            ref={messageRef}
+          >
             <Message
               timestamp={message.timestamp}
               content={message.message}

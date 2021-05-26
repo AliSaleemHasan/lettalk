@@ -32,7 +32,7 @@
   flex: 1;
 }
 .info__ {
-  width: 100%;
+  width: 80%;
   word-wrap: break-word;
   display: flex;
   align-items: center;
@@ -42,6 +42,7 @@
 
 .info__ p {
   color: #444;
+  width: 80%;
 }
 
 .info__ .MuiSvgIcon-root {

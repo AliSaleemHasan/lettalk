@@ -1,6 +1,6 @@
 import "./App.css";
 import Media from "react-media";
-import { useState, useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import Chat from "./Components/Chat";
 import Sidebar from "./Components/Sidebar";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -13,7 +13,6 @@ import requests from "./handleRequests";
 import { io } from "socket.io-client";
 import { useSocket } from "./SocketProvider.js";
 function App() {
-  console.log("app render ");
   const [socket, setSocket] = useSocket();
   const user = useSelector(userSelector);
   const dispatch = useDispatch();
