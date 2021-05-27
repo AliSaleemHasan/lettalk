@@ -1,17 +1,17 @@
 import "./App.css";
 import Media from "react-media";
-import { useEffect } from "react";
-import Chat from "./Components/Chat";
-import Sidebar from "./Components/Sidebar";
+import { useEffect, Suspense, lazy } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Info from "./Components/Info.js";
-import Login from "./Components/Login.js";
 import { Selector as userSelector, setUser } from "./features/userSlice";
-import { Selector as chatsSelector, setChat } from "./features/chatSlice";
 import { useSelector, useDispatch } from "react-redux";
 import requests from "./handleRequests";
 import { io } from "socket.io-client";
 import { useSocket } from "./SocketProvider.js";
+const Chat = lazy(() => import("./Components/Chat"));
+const Sidebar = lazy(() => import("./Components/Sidebar"));
+const Info = lazy(() => import("./Components/Info.js"));
+const Login = lazy(() => import("./Components/Login.js"));
+
 function App() {
   const [socket, setSocket] = useSocket();
   const user = useSelector(userSelector);
@@ -36,7 +36,7 @@ function App() {
   }, [user]);
 
   return (
-    <div>
+    <Suspense fallback={<h1 className="loading">...loading</h1>}>
       <Media
         queries={{
           small: "(max-width:786)",
@@ -91,7 +91,7 @@ function App() {
           )
         }
       </Media>
-    </div>
+    </Suspense>
   );
 }
 

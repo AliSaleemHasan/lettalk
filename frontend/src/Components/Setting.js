@@ -17,26 +17,8 @@ function Settings({ setToggleSettings }) {
   const newImageUrl = useRef();
   const dispatch = useDispatch();
 
-  //upload user image..
-
-  // const uploadImageOptions = () => {
-  //   const fileInput = document.querySelector(".upload__file");
-  //   const formData = new FormData();
-
-  //   formData.append("file", fileInput.files[0]);
-  //   const options = {
-  //     method: "POST",
-  //     Headers: {
-  //       "Content-Type": "multipart/form-data",
-  //     },
-  //     body: formData,
-  //   };
-  //   return options;
-  // };
-
   const UploadImage = async (e) => {
     e.preventDefault();
-    // const options = uploadImageOptions();
 
     if (newImageUrl.current.value) {
       requests
@@ -46,21 +28,6 @@ function Settings({ setToggleSettings }) {
     }
     setshowInput(false);
   };
-
-  // const handleUploadImages = (e) => {
-  //   e.preventDefault();
-  //   const reader = new FileReader();
-
-  //   reader.onload = () => {
-  //     if (reader.readyState === 2) {
-  //       setnewImage(reader.result);
-  //       setSaveImage(true);
-  //     }
-  //   };
-
-  //   reader.readAsDataURL(e.target.files[0]);
-
-  // };
 
   const returntoChat = (e) => {
     e.preventDefault();
