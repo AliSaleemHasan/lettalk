@@ -14,6 +14,7 @@ import requests from "../handleRequests.js";
 import Close from "@material-ui/icons/Close";
 import { useSocket } from "../SocketProvider.js";
 import { useHistory } from "react-router-dom";
+
 function Sidebar() {
   const [socket] = useSocket();
   const user = useSelector(Selector);
