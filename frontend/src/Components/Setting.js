@@ -1,17 +1,15 @@
 import React, { useState, useRef } from "react";
 import "./Setting.css";
-import { Avatar } from "@material-ui/core";
 import { Selector, setUser } from "../features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
-import AppSetting from "./AppSetting.js";
 import Person from "@material-ui/icons/Person";
 import IconButton from "@material-ui/core/IconButton";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { Info as Inf } from "@material-ui/icons";
 import Email from "@material-ui/icons/Email";
 import requests from "../handleRequests";
-
-function Settings({ setToggleSettings }) {
+import { LoadableAppSetting, LoadableAvatar } from "../loadable";
+const Settings = React.memo(({ setToggleSettings }) => {
   const user = useSelector(Selector);
   const [showInput, setshowInput] = useState(false);
   const newImageUrl = useRef();
@@ -41,9 +39,12 @@ function Settings({ setToggleSettings }) {
 
       <div className="settings__setImage">
         <form className="settings__image">
-          <Avatar src={user?.image} onClick={() => setshowInput(!showInput)}>
+          <LoadableAvatar
+            src={user?.image}
+            onClick={() => setshowInput(!showInput)}
+          >
             {!user.image && user.username[0]}
-          </Avatar>
+          </LoadableAvatar>
 
           {showInput && (
             <div className="settings__afterUpbload">
@@ -61,9 +62,13 @@ function Settings({ setToggleSettings }) {
       </div>
 
       <div className="settings__settings">
-        <AppSetting name={user.username} Icon={Person} settingName="username" />
-        <AppSetting name={user.bio} Icon={Inf} settingName="bio" />
-        <AppSetting
+        <LoadableAppSetting
+          name={user.username}
+          Icon={Person}
+          settingName="username"
+        />
+        <LoadableAppSetting name={user.bio} Icon={Inf} settingName="bio" />
+        <LoadableAppSetting
           type="email"
           Icon={Email}
           name={user.email}
@@ -76,6 +81,6 @@ function Settings({ setToggleSettings }) {
       </IconButton>
     </div>
   );
-}
+});
 
 export default Settings;

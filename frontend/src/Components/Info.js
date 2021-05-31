@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./Info.css";
-import Avatar from "@material-ui/core/Avatar";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import Person from "@material-ui/icons/Person";
 import Email from "@material-ui/icons/Email";
@@ -10,7 +9,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { Selector as userSelector } from "../features/userSlice";
 import { Selector as chatSelector } from "../features/chatSlice";
 import { useSelector } from "react-redux";
-
+import { LoadableAvatar } from "../loadable";
 function Info() {
   const history = useHistory();
   const params = useParams();
@@ -35,7 +34,7 @@ function Info() {
         <h3>{otherUser?.username}'s Info</h3>
       </div>
       <div className="info__middle">
-        <Avatar src={otherUser?.image} />
+        <LoadableAvatar src={otherUser?.image} />
       </div>
 
       <div className="info__bottom">

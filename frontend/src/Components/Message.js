@@ -1,7 +1,7 @@
 import React from "react";
 import "./Message.css";
 import Avatar from "@material-ui/core/Avatar";
-function Message({ content, timestamp, is_sender, image, type }) {
+const Message = React.memo(({ content, timestamp, is_sender, image, type }) => {
   return (
     <div className={`message ${is_sender ? "message__r" : ""}`}>
       <div className="message__left">
@@ -18,6 +18,5 @@ function Message({ content, timestamp, is_sender, image, type }) {
       </div>
     </div>
   );
-}
-
+});
 export default Message;

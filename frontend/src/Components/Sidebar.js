@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Sidebar.css";
-import Avatar from "@material-ui/core/Avatar";
 import Chat from "@material-ui/icons/Chat";
 import Settings from "@material-ui/icons/Settings";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import Search from "@material-ui/icons/Search";
 import SidebarChat from "./SidebarChat";
 import IconButton from "@material-ui/core/IconButton";
-import Setting from "./Setting.js";
 import { setUser, Selector } from "../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import requests from "../handleRequests.js";
@@ -15,6 +13,7 @@ import Close from "@material-ui/icons/Close";
 import { useSocket } from "../SocketProvider.js";
 import { useHistory } from "react-router-dom";
 
+import { LoadableAvatar, LoadableSetting } from "../loadable";
 function Sidebar() {
   const [socket] = useSocket();
   const user = useSelector(Selector);
@@ -84,15 +83,15 @@ function Sidebar() {
   }, []);
   return toggleSettings ? (
     <div className="settings">
-      <Setting setToggleSettings={setToggleSettings} />
+      <LoadableSetting setToggleSettings={setToggleSettings} />
     </div>
   ) : (
     <div className="sidebar">
       <div className="sidebar__left">
         <div className="sidebar__leftAvatar">
-          <Avatar src={user?.image}>
+          <LoadableAvatar src={user?.image}>
             {!user?.image && user?.username[0]?.toUpperCase()}
-          </Avatar>
+          </LoadableAvatar>
         </div>
         <div className="sidebar__leftIcons">
           <IconButton>

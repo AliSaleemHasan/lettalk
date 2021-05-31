@@ -4,7 +4,7 @@ const express = require("express");
 const passport = require("passport");
 const socket = require("socket.io");
 const cookieParesr = require("cookie-parser");
-
+const compression = require("compression");
 const port = process.env.PORT || 8080;
 //mongoose connection;
 
@@ -16,6 +16,7 @@ const chatRouter = require("./routes/chat_router");
 const frontRouter = require("./routes/frontendrouter");
 
 const app = express();
+app.use(compression());
 const server = http.createServer(app);
 const io = socket(server);
 

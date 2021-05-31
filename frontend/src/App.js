@@ -1,16 +1,19 @@
 import "./App.css";
 import Media from "react-media";
-import { useEffect, Suspense, lazy } from "react";
+import { useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Selector as userSelector, setUser } from "./features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import requests from "./handleRequests";
 import { io } from "socket.io-client";
 import { useSocket } from "./SocketProvider.js";
-const Chat = lazy(() => import("./Components/Chat"));
-const Sidebar = lazy(() => import("./Components/Sidebar"));
-const Info = lazy(() => import("./Components/Info.js"));
-const Login = lazy(() => import("./Components/Login.js"));
+
+import {
+  LoadableInfo,
+  LoadableChat,
+  LoadableSidebar,
+  LoadableLogin,
+} from "./loadable";
 
 function App() {
   const [socket, setSocket] = useSocket();
@@ -36,62 +39,60 @@ function App() {
   }, [user]);
 
   return (
-    <Suspense fallback={<h1 className="loading">...loading</h1>}>
-      <Media
-        queries={{
-          small: "(max-width:786)",
-          medium: "(min-width: 787px) and (max-width: 1000px)",
-          large: "(min-width:1001px)",
-        }}
-      >
-        {(matches) =>
-          !user ? (
-            <Login />
-          ) : matches.large ? (
-            <div className="app">
-              <Router>
-                <Sidebar />
+    <Media
+      queries={{
+        small: "(max-width:786)",
+        medium: "(min-width: 787px) and (max-width: 1000px)",
+        large: "(min-width:1001px)",
+      }}
+    >
+      {(matches) =>
+        !user ? (
+          <LoadableLogin />
+        ) : matches.large ? (
+          <div className="app">
+            <Router>
+              <LoadableSidebar />
+              <Route exact path="/chat/:chatId/:index">
+                <LoadableChat />{" "}
+              </Route>
+              <Route exact path="/chat/:chatId/:index/info">
+                <LoadableChat />
+                <LoadableInfo />
+              </Route>
+            </Router>
+          </div>
+        ) : matches.medium ? (
+          <div className="app">
+            <Router>
+              <LoadableSidebar />{" "}
+              <Route exact path="/chat/:chatId/:index">
+                <LoadableChat />{" "}
+              </Route>
+              <Route exact path="/chat/:chatId/:index/info">
+                <LoadableInfo />
+              </Route>
+            </Router>
+          </div>
+        ) : (
+          <div className="app">
+            <Router>
+              <Switch>
                 <Route exact path="/chat/:chatId/:index">
-                  <Chat />
+                  <LoadableChat />
                 </Route>
                 <Route exact path="/chat/:chatId/:index/info">
-                  <Chat />
-                  <Info />
+                  <LoadableInfo />
                 </Route>
-              </Router>
-            </div>
-          ) : matches.medium ? (
-            <div className="app">
-              <Router>
-                <Sidebar />
-                <Route exact path="/chat/:chatId/:index">
-                  <Chat />
+                <Route exact path="/">
+                  <LoadableSidebar />{" "}
                 </Route>
-                <Route exact path="/chat/:chatId/:index/info">
-                  <Info />
-                </Route>
-              </Router>
-            </div>
-          ) : (
-            <div className="app">
-              <Router>
-                <Switch>
-                  <Route exact path="/chat/:chatId/:index">
-                    <Chat />
-                  </Route>
-                  <Route exact path="/chat/:chatId/:index/info">
-                    <Info />
-                  </Route>
-                  <Route exact path="/">
-                    <Sidebar />
-                  </Route>
-                </Switch>
-              </Router>
-            </div>
-          )
-        }
-      </Media>
-    </Suspense>
+              </Switch>
+            </Router>
+          </div>
+        )
+      }
+    </Media>
   );
 }
 

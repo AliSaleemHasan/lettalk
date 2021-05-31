@@ -63,7 +63,7 @@ chatRouter
   });
 
 chatRouter.get("/:chatID", authenticate.verifyJwt, (req, res, next) => {
-  Chats.findById(req.params.chatID)
+  Chats.findById(req.params.chatID, { messages: { $slice: 3 } })
     .populate("user1")
     .populate("user2")
     .then(
