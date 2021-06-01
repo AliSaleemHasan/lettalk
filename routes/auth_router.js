@@ -12,7 +12,7 @@ router.get(
   (req, res) => {
     let token = authenticate.getToken({ id: req.user._id });
     res.cookie("UTOF", token, {
-      maxAge: "4d",
+      maxAge: 2983428,
       httpOnly: true,
       sameSite: "lax",
     });
@@ -37,7 +37,7 @@ router.get(
   (req, res, next) => {
     let token = authenticate.getToken({ id: req.user._id });
     res.cookie("UTOF", token, {
-      maxAge: "4d",
+      maxAge: 2983428,
       httpOnly: true,
       sameSite: "lax",
     });

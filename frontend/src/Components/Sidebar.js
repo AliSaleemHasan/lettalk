@@ -6,7 +6,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import Search from "@material-ui/icons/Search";
 import SidebarChat from "./SidebarChat";
 import IconButton from "@material-ui/core/IconButton";
-import { setUser, Selector } from "../features/userSlice";
+import { setUser, Selector as userSelector } from "../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import requests from "../handleRequests.js";
 import Close from "@material-ui/icons/Close";
@@ -16,7 +16,7 @@ import { useHistory } from "react-router-dom";
 import { LoadableAvatar, LoadableSetting } from "../loadable";
 function Sidebar() {
   const [socket] = useSocket();
-  const user = useSelector(Selector);
+  const user = useSelector(userSelector);
   const dispatch = useDispatch();
   const history = useHistory();
   const [toggleSettings, setToggleSettings] = useState(false);
@@ -53,7 +53,7 @@ function Sidebar() {
   useEffect(() => {
     if (socket == null) return;
     const setReceivedMessage = (message, index) => {
-      const chats = userList;
+      const chats = [...userList];
       chats[index].messages[0] = message;
       setUserList(chats);
     };
@@ -77,7 +77,9 @@ function Sidebar() {
     requests
       .getAllChats(user._id)
       .then((data) => {
-        if (data.chats) setUserList(data.chats);
+        if (data.chats) {
+          setUserList(data.chats);
+        }
       })
       .catch((err) => console.log(err));
   }, []);
@@ -94,16 +96,16 @@ function Sidebar() {
           </LoadableAvatar>
         </div>
         <div className="sidebar__leftIcons">
-          <IconButton>
+          <IconButton aria-label="chats-button">
             <Chat style={{ color: "#3f51b5" }} />
           </IconButton>
-          <IconButton onClick={gotoSettings}>
+          <IconButton aria-label="Setting-button" onClick={gotoSettings}>
             <Settings />
           </IconButton>
         </div>
 
         <div className="sidebar__leftLogout">
-          <IconButton onClick={logout}>
+          <IconButton aria-label="exit-button" onClick={logout}>
             <ExitToAppIcon />
           </IconButton>
         </div>

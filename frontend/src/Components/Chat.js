@@ -9,7 +9,11 @@ import ArrowBack from "@material-ui/icons/ArrowBack";
 import { useHistory } from "react-router-dom";
 import Picker from "emoji-picker-react";
 import { useParams } from "react-router-dom";
-import { setChat, Selector as chatSelector } from "../features/chatSlice";
+import {
+  setMessage,
+  setChat,
+  Selector as chatSelector,
+} from "../features/chatSlice";
 import { Selector as userSelector } from "../features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import requests from "../handleRequests.js";
@@ -117,6 +121,10 @@ function Chat() {
     if (!socket || (!user && !chat)) return;
 
     requests
+      .getMessages(params.chatId)
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
+    requests
       .getChat(params.chatId)
       .then((data) => {
         dispatch(setChat(data.chat));
@@ -168,6 +176,7 @@ function Chat() {
     if (socket == null) return;
 
     const setReceivedMessage = (message) => {
+      dispatch(setMessage({ index: messages.length, message }));
       setMessages([...messages, message]);
     };
     socket.on("recive__message", setReceivedMessage);

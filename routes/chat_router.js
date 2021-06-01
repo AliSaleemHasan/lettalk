@@ -63,7 +63,7 @@ chatRouter
   });
 
 chatRouter.get("/:chatID", authenticate.verifyJwt, (req, res, next) => {
-  Chats.findById(req.params.chatID, { messages: { $slice: 3 } })
+  Chats.findById(req.params.chatID)
     .populate("user1")
     .populate("user2")
     .then(
@@ -79,6 +79,23 @@ chatRouter.get("/:chatID", authenticate.verifyJwt, (req, res, next) => {
 
 chatRouter
   .route("/:chatID/messages")
+  .get(authenticate.verifyJwt, (req, res, next) => {
+    Chats.aggregate([
+      { $match: { _id: req.params.chatID } },
+      {
+        $project: {
+          messages: { $slice: ["$messages", 3] },
+        },
+      },
+    ]).then(
+      (chat) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json({ messages: chat.messages });
+      },
+      (err) => console.log(err)
+    );
+  })
   .post(authenticate.verifyJwt, (req, res, next) => {
     Chats.findById(req.params.chatID)
       .then(

@@ -24,7 +24,10 @@ function Settings({ type, name, Icon, settingName }) {
         updatedInfo
       );
       response
-        .then((newUser) => dispatch(setUser(newUser.user)))
+        .then((newUser) => {
+          console.log(newUser);
+          dispatch(setUser(newUser.user));
+        })
         .catch((err) => console.log(err));
     }
   };

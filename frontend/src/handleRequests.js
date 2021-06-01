@@ -37,7 +37,7 @@ const request = {
   },
 
   editUserInfo: async (id, settingName, name, updatedInfo) => {
-    const response = await fetch(`users/info/${id}?${settingName}=${name}`, {
+    const response = await fetch(`/users/info/${id}?${settingName}=${name}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -46,7 +46,13 @@ const request = {
     });
     return response.json();
   },
-  sendMessage: async (id, message, sender, unseened) => {
+  getMessages: async (id) => {
+    const response = await fetch(`/chats/${id}/messages`, {
+      method: "GET",
+    });
+    return response.json();
+  },
+  sendMessage: async (id, message, sender) => {
     const response = await fetch(`/chats/${id}/messages`, {
       method: "POST",
       headers: {
@@ -70,7 +76,7 @@ const request = {
     return response.json();
   },
   searchForUsers: async (query) => {
-    const response = await fetch("users/search", {
+    const response = await fetch("/users/search", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -80,7 +86,7 @@ const request = {
     return response.json();
   },
   addChat: async (user1, user2) => {
-    const response = await fetch(`chats/user/${user1}`, {
+    const response = await fetch(`/chats/user/${user1}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

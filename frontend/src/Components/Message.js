@@ -1,11 +1,16 @@
 import React from "react";
 import "./Message.css";
-import Avatar from "@material-ui/core/Avatar";
+import { LoadableAvatar } from "../loadable";
 const Message = React.memo(({ content, timestamp, is_sender, image, type }) => {
   return (
     <div className={`message ${is_sender ? "message__r" : ""}`}>
       <div className="message__left">
-        <Avatar src={image}></Avatar>
+        <LoadableAvatar
+          alt="user image"
+          src={image ? image : "/defaults/Chaty.png"}
+          width="75"
+          height="75"
+        ></LoadableAvatar>
       </div>
       <div className="message__right">
         <p className="message__content">

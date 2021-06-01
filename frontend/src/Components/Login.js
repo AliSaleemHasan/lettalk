@@ -14,7 +14,7 @@ function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
     request
-      .login("users/login", password, email)
+      .login("/users/login", password, email)
       .then((response) => response.json())
       .then((data) => {
         if (data.status == "failed")
@@ -26,7 +26,7 @@ function Login() {
   const handleSignup = (e) => {
     e.preventDefault();
     request
-      .signup("users/signup", username, password, email)
+      .signup("/users/signup", username, password, email)
       .then((response) => response.json())
       .then((data) => {
         if (!data.user) {
@@ -132,7 +132,7 @@ function Login() {
               <button onClick={gotoSignup}>
                 {!signup ? "Dont Have Account ! Signup" : "->"}
               </button>
-              <button onClick={() => setloginMethod(0)}>return</button>
+              <button onClick={() => setloginMethod(0)}>Return</button>
             </form>
           </div>
         )}

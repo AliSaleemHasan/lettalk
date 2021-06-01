@@ -66,7 +66,11 @@ io.on("connection", (socket) => {
 });
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static("./frontend/build"));
+  app.use(
+    express.static("./frontend/build", {
+      maxAge: "40d",
+    })
+  );
   app.use("/", frontRouter);
 }
 app.use("/auth", authRouter);
