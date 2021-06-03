@@ -147,7 +147,9 @@ function Sidebar() {
                       key={chat._id}
                       count={chat.numOfUnseened}
                       id={chat._id}
-                      lastMessage={chat?.messages[0] || "."}
+                      lastMessage={
+                        chat?.messages[chat?.messages.length - 1] || "."
+                      }
                       otherUser={chat?.user1}
                     />
                   );

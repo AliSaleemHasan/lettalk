@@ -9,7 +9,11 @@ import ArrowBack from "@material-ui/icons/ArrowBack";
 import { useHistory } from "react-router-dom";
 import Picker from "emoji-picker-react";
 import { useParams } from "react-router-dom";
-import { Selector as chatsSelector, setMessage } from "../features/chatsSlice";
+import {
+  editMessage,
+  Selector as chatsSelector,
+  setMessage,
+} from "../features/chatsSlice";
 import { Selector as userSelector } from "../features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import requests from "../handleRequests.js";
@@ -58,7 +62,9 @@ function Chat() {
           message.message,
           otherUserChatIndex
         );
-        dispatch(setMessage(message.message));
+        dispatch(
+          setMessage({ message: message.message, chatIndex: params.index })
+        );
 
         socket.emit("not__typing", otherUserID);
       })
@@ -86,16 +92,24 @@ function Chat() {
         messageToChange.message._id,
         editedMessage
       )
-      .then((data) =>
+      .then((data) => {
         socket.emit(
           "message__editOrdelete",
           otherUserID,
           data.message,
           messageToChange.index,
-          params.index,
+          otherUserChatIndex,
           "edit"
-        )
-      )
+        );
+        dispatch(
+          editMessage({
+            type: "edit",
+            chatIndex: params.index,
+            message: data.message,
+            index: messageToChange.index,
+          })
+        );
+      })
       .catch((err) => console.log(err));
 
     setMessageToChange({});
@@ -108,16 +122,24 @@ function Chat() {
         chats[params.index]?._id,
         messageToChange.message._id
       )
-      .then((data) =>
+      .then((data) => {
         socket.emit(
           "message__editOrdelete",
           otherUserID,
           data.message,
           messageToChange.index,
-          params.index,
+          otherUserChatIndex,
           "delete"
-        )
-      )
+        );
+        dispatch(
+          editMessage({
+            type: "delete",
+            chatIndex: params.index,
+            message: data.message,
+            index: messageToChange.index,
+          })
+        );
+      })
       .catch((err) => console.log(err));
 
     setMessageToChange({});

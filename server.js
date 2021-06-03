@@ -68,13 +68,6 @@ io.on("connection", (socket) => {
       socket
         .in(otherUserID)
         .emit("recive__editedMessage", message, messageIndex, chatIndex, type);
-      socket.emit(
-        "recive__editedMessage",
-        message,
-        messageIndex,
-        chatIndex,
-        type
-      );
     }
   );
 
