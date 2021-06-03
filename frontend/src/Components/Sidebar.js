@@ -12,17 +12,22 @@ import requests from "../handleRequests.js";
 import Close from "@material-ui/icons/Close";
 import { useSocket } from "../SocketProvider.js";
 import { useHistory } from "react-router-dom";
+import {
+  addChat,
+  setChats,
+  Selector as chatsSelector,
+} from "../features/chatsSlice";
 
 import { LoadableAvatar, LoadableSetting } from "../loadable";
 function Sidebar() {
   const [socket] = useSocket();
   const user = useSelector(userSelector);
+  const chats = useSelector(chatsSelector);
   const dispatch = useDispatch();
   const history = useHistory();
   const [toggleSettings, setToggleSettings] = useState(false);
   const searchQuery = useRef("");
   const [searchedUsers, setSearchedUsers] = useState([]);
-  const [userList, setUserList] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const serverLogout = () => {
     requests.logout().catch((err) => console.log(err));
@@ -50,35 +55,40 @@ function Sidebar() {
       .catch((err) => console.log(err));
   };
 
-  useEffect(() => {
-    if (socket == null) return;
-    const setReceivedMessage = (message, index) => {
-      const chats = [...userList];
-      chats[index].messages[0] = message;
-      setUserList(chats);
-    };
-    socket.on("recive__message", setReceivedMessage);
+  // useEffect(() => {
+  //   if (socket == null) return;
+  //   const setReceivedMessage = (message, index) => {
+  //     const chats = [...userList];
+  //     chats[index].messages[0] = message;
+  //     setUserList(chats);
+  //   };
+  //   socket.on("recive__message", setReceivedMessage);
 
-    return () => socket.off("recive__message", setReceivedMessage);
-  }, [socket, userList]);
+  //   return () => socket.off("recive__message", setReceivedMessage);
+  // }, [socket, userList]);
 
   //to get room when ever other person add it to its chat!
 
   useEffect(() => {
     if (!socket) return;
-    socket.once("accept__addRoom", (room) => {
-      setUserList([...userList, room]);
-    });
 
-    return () => socket.off("accept_addRoom");
-  }, [socket, userList]);
+    let addRoomFunction = (room) => {
+      // setUserList([...userList, room]);
+      console.log("lestining to add room ");
+      dispatch(addChat(room));
+    };
+    socket.on("accept__addRoom", addRoomFunction);
+
+    return () => socket.off("accept_addRoom", addRoomFunction);
+  }, [socket]);
 
   useEffect(() => {
     requests
       .getAllChats(user._id)
       .then((data) => {
         if (data.chats) {
-          setUserList(data.chats);
+          // setUserList(data.chats);
+          dispatch(setChats(data.chats));
         }
       })
       .catch((err) => console.log(err));
@@ -124,7 +134,7 @@ function Sidebar() {
           {isSearching
             ? searchedUsers?.map((resultUser) => (
                 <SidebarChat
-                  index={userList?.length || 0}
+                  index={chats?.length || 0}
                   key={resultUser._id}
                   name={resultUser.username}
                   email={resultUser.email}
@@ -133,7 +143,7 @@ function Sidebar() {
                   user2={resultUser._id}
                 />
               ))
-            : userList.map((chat, index) => {
+            : chats?.map((chat, index) => {
                 if (chat.user1._id !== user._id)
                   return (
                     <SidebarChat

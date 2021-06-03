@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./SidebarChat.css";
 import requests from "../handleRequests.js";
-import { setChat, Selector as chatSelector } from "../features/chatSlice";
 import { Selector as userSelector } from "../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useSocket } from "../SocketProvider.js";
 import { useParams } from "react-router-dom";
+import { addChat, Selector as chatsSelector } from "../features/chatsSlice";
 import { LoadableAvatar } from "../loadable";
 const SidebarChat = React.memo(
   ({
@@ -21,44 +21,48 @@ const SidebarChat = React.memo(
     isTyping,
     index,
   }) => {
-    const chatId = useParams();
-    const chat = useSelector(chatSelector);
+    const params = useParams();
     const history = useHistory();
     const [socket] = useSocket();
     const [error, setError] = useState("");
+    const chats = useSelector(chatsSelector);
     const user = useSelector(userSelector);
     const dispatch = useDispatch();
     const gotoChat = (e) => {
-      e.preventDefault();
+      // e.preventDefault();
 
-      if (chatId.chatId === chat?._id) {
-        history.push(`/chat/${id}/${index}`);
-        return;
-      }
+      // if (params.chatId === chats[params.index]?._id) {
+      //   history.push(`/chat/${id}/${index}`);
+      //   return;
+      // }
 
-      requests
-        .getChat(id)
-        .then((data) => {
-          dispatch(setChat(data.chat));
-        })
-        .catch((err) => console.log(err));
+      // requests
+      //   .getChat(id)
+      //   .then((data) => {
+      //     dispatch(setChat(data.chat));
+      //   })
+      //   .catch((err) => console.log(err));
 
       history.push(`/chat/${id}/${index}`);
     };
 
-    const addChat = async (e) => {
+    const addNewChat = async (e) => {
+      e.preventDefault();
       if (!socket) {
         return;
       }
-      e.preventDefault();
+      console.log("in add new chat funciton");
       requests
-        .addChat(user._id, user2)
+        .addChatToDB(user._id, user2)
         .then((data) => {
-          let room = data.chat;
-          room.user1 = user;
-
-          socket.emit("add__room", room, user2);
+          console.log(data);
           if (data.success) {
+            let room = data.chat;
+            room.user1 = user;
+
+            dispatch(addChat(room));
+            socket.emit("add__room", room, user2);
+
             return history.push(`/chat/${data.chat._id}/${index}`);
           }
           setError(data?.message);
@@ -68,7 +72,7 @@ const SidebarChat = React.memo(
     return (
       <div
         className="sidebarChat"
-        onClick={type !== "search" ? gotoChat : addChat}
+        onClick={type !== "search" ? gotoChat : addNewChat}
       >
         <div className="sidebarChat__left">
           <LoadableAvatar alt="user image" src={image}>

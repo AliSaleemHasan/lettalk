@@ -85,7 +85,7 @@ const request = {
     });
     return response.json();
   },
-  addChat: async (user1, user2) => {
+  addChatToDB: async (user1, user2) => {
     const response = await fetch(`/chats/user/${user1}`, {
       method: "POST",
       headers: {
