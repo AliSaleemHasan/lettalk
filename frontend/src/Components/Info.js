@@ -7,26 +7,25 @@ import { Info as Inf } from "@material-ui/icons";
 import { IconButton } from "@material-ui/core";
 import { useHistory, useParams } from "react-router-dom";
 import { Selector as userSelector } from "../features/userSlice";
-import { Selector as chatSelector } from "../features/chatSlice";
+import { Selector as chatsSelector } from "../features/chatsSlice";
 import { useSelector } from "react-redux";
 import { LoadableAvatar } from "../loadable";
 function Info() {
   const history = useHistory();
   const params = useParams();
-
-  const chat = useSelector(chatSelector);
+  const chats = useSelector(chatsSelector);
   const [otherUser, setOtherUser] = useState(null);
   const user = useSelector(userSelector);
 
   useEffect(() => {
-    if (chat && user)
-      user?._id === chat?.user1?._id
-        ? setOtherUser(chat.user2)
-        : setOtherUser(chat.user1);
+    if (chats[params.index] && user)
+      user?._id === chats[params.index]?.user1?._id
+        ? setOtherUser(chats[params.index].user2)
+        : setOtherUser(chats[params.index].user1);
   }, []);
   const returntoChat = (e) => {
     e.preventDefault();
-    history.push(`/chat/${chat._id}/${params.index}`);
+    history.push(`/chat/${chats[params.index]._id}/${params.index}`);
   };
   return (
     <div className="info">
