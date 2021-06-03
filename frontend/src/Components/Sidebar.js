@@ -69,25 +69,24 @@ function Sidebar() {
 
   //to get room when ever other person add it to its chat!
 
-  useEffect(() => {
-    if (!socket) return;
+  // useEffect(() => {
+  //   if (!socket) return;
 
-    let addRoomFunction = (room) => {
-      // setUserList([...userList, room]);
-      console.log("lestining to add room ");
-      dispatch(addChat(room));
-    };
-    socket.on("accept__addRoom", addRoomFunction);
+  //   let addRoomFunction = (room) => {
+  //     // setUserList([...userList, room]);
+  //     console.log("lestining to add room ");
+  //     dispatch(addChat(room));
+  //   };
+  //   socket.on("accept__addRoom", addRoomFunction);
 
-    return () => socket.off("accept_addRoom", addRoomFunction);
-  }, [socket]);
+  //   return () => socket.off("accept_addRoom", addRoomFunction);
+  // }, [socket]);
 
   useEffect(() => {
     requests
       .getAllChats(user._id)
       .then((data) => {
         if (data.chats) {
-          // setUserList(data.chats);
           dispatch(setChats(data.chats));
         }
       })
@@ -136,11 +135,8 @@ function Sidebar() {
                 <SidebarChat
                   index={chats?.length || 0}
                   key={resultUser._id}
-                  name={resultUser.username}
-                  email={resultUser.email}
                   type="search"
-                  image={resultUser.image}
-                  user2={resultUser._id}
+                  otherUser={resultUser}
                 />
               ))
             : chats?.map((chat, index) => {
@@ -148,24 +144,22 @@ function Sidebar() {
                   return (
                     <SidebarChat
                       index={index}
+                      key={chat._id}
                       count={chat.numOfUnseened}
                       id={chat._id}
                       lastMessage={chat?.messages[0] || "."}
-                      image={chat.user1.image}
-                      key={chat._id}
-                      name={chat.user1.username}
+                      otherUser={chat?.user1}
                     />
                   );
                 else
                   return (
                     <SidebarChat
                       index={index}
+                      key={chat._id}
                       count={chat.numOfUnseened}
                       lastMessage={chat?.messages[0] || "."}
-                      id={chat._id}
-                      image={chat.user2.image}
-                      key={chat._id}
-                      name={chat.user2.username}
+                      id={chat?._id}
+                      otherUser={chat?.user2}
                     />
                   );
               })}

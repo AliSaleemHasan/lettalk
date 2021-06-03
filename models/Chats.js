@@ -27,6 +27,14 @@ const chatSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "user",
   },
+  user1Index: {
+    type: String,
+    required: true,
+  },
+  user2Index: {
+    type: String,
+    required: true,
+  },
   messages: [messageScheam],
 });
 

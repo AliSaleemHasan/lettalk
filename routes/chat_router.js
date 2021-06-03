@@ -3,6 +3,7 @@ const Chats = require("../models/Chats");
 const chatRouter = express.Router();
 const authenticate = require("../authenticate");
 chatRouter.use(express.json());
+const { checkChatPassword } = require("./user_router");
 
 //userID as params then give me all chat to this user
 
@@ -16,15 +17,9 @@ chatRouter
       .populate("user2")
       .then(
         (chats) => {
-          let chatsCP = chats;
-          chatsCP.forEach((chat) => {
-            if (chat.messages.length > 0)
-              chat.messages = chat.messages[chat.messages.length - 1];
-            else chat.messages[0] = ".";
-          });
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
-          res.json({ chats: chatsCP });
+          res.json({ chats });
         },
         (err) => next(err)
       )
@@ -43,21 +38,49 @@ chatRouter
           res.setHeader("Content-Type", "application/json");
           return res.json({
             success: false,
-            message: "chat is already existed !!!!!!",
+            error: "chat is already existed !!!!!!",
           });
         }
 
-        Chats.create({
-          user1: req.body.user1,
-          user2: req.body.user2,
-        })
+        let addChat = checkChatPassword(
+          req.query.requestedUserID,
+          req.query.password
+        );
+        if (addChat) {
+          let count;
 
-          .then((chat) => {
-            res.statusCode = 200;
-            res.setHeader("Content-Type", "application/json");
-            res.json({ success: true, chat });
+          Chats.find({
+            $or: [
+              { user1: req.query.requestedUserID },
+              { user2: req.query.requestedUserID },
+            ],
           })
-          .catch((err) => next(err));
+            .then((chats) => {
+              if ((chats = [])) {
+                count = 0;
+              }
+              count = chats.length;
+
+              Chats.create({
+                user1: req.body.user1,
+                user2: req.body.user2,
+                user1Index: req.query.user1Index,
+                user2Index: count,
+              })
+
+                .then((chat) => {
+                  res.statusCode = 200;
+                  res.setHeader("Content-Type", "application/json");
+                  res.json({ success: true, chat });
+                })
+                .catch((err) => next(err));
+            })
+            .catch((err) => console.log(err));
+        } else {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json({ success: false, error: "Invalid password!" });
+        }
       })
       .catch((err) => console.log(err));
   });

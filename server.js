@@ -10,7 +10,11 @@ const port = process.env.PORT || 8080;
 
 const path = require("path");
 //routes
-const { userRouter, setUserState } = require("./routes/user_router");
+const {
+  userRouter,
+  setUserState,
+  checkChatPassword,
+} = require("./routes/user_router");
 const authRouter = require("./routes/auth_router");
 const chatRouter = require("./routes/chat_router");
 const frontRouter = require("./routes/frontendrouter");
@@ -40,7 +44,6 @@ io.on("connection", (socket) => {
 
   socket.on("send__message", (otherUserID, message, index) => {
     socket.in(otherUserID).emit("recive__message", message, index);
-    socket.emit("recive__message", message, index);
   });
 
   socket.on("typing", (otherUserID) => {
@@ -51,8 +54,12 @@ io.on("connection", (socket) => {
     socket.broadcast.to(otherUserID).emit("isNot__typing");
   });
 
-  socket.on("add__room", (chat, otherUserID) => {
-    socket.to(otherUserID).emit("accept__addRoom", chat);
+  // socket.on("add__room", (chat, otherUserID) => {
+  //   socket.to(otherUserID).emit("accept__addRoom", chat);
+  // });
+
+  socket.on("addingChatWarning", (otherUserId, room) => {
+    socket.to(otherUserId).emit("addRoom", room);
   });
 
   socket.on(

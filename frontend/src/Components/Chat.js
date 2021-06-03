@@ -9,11 +9,7 @@ import ArrowBack from "@material-ui/icons/ArrowBack";
 import { useHistory } from "react-router-dom";
 import Picker from "emoji-picker-react";
 import { useParams } from "react-router-dom";
-import {
-  editMessage,
-  Selector as chatsSelector,
-  setMessage,
-} from "../features/chatsSlice";
+import { Selector as chatsSelector, setMessage } from "../features/chatsSlice";
 import { Selector as userSelector } from "../features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import requests from "../handleRequests.js";
@@ -22,6 +18,7 @@ import Delete from "@material-ui/icons/Delete";
 import { useSocket } from "../SocketProvider";
 function Chat() {
   const [otherUserID, setOtherUserID] = useState();
+  const [otherUserChatIndex, setOtherUserChatIndex] = useState();
   const [isTyping, setIsTyping] = useState(false);
   const history = useHistory();
   const [socket] = useSocket();
@@ -29,7 +26,6 @@ function Chat() {
   const [toggleEmoji, setToggleEmoji] = useState(false);
   const user = useSelector(userSelector);
   const chats = useSelector(chatsSelector);
-  const [messages, setMessages] = useState([]);
   const dispatch = useDispatch();
   const params = useParams();
   const [messageToChange, setMessageToChange] = useState({});
@@ -60,8 +56,9 @@ function Chat() {
           "send__message",
           otherUserID,
           message.message,
-          params.index
+          otherUserChatIndex
         );
+        dispatch(setMessage(message.message));
 
         socket.emit("not__typing", otherUserID);
       })
@@ -132,20 +129,11 @@ function Chat() {
     chats[params.index]?.user1?._id == user._id
       ? setOtherUserID(chats[params.index]?.user2?._id)
       : setOtherUserID(chats[params.index]?.user1?._id);
+
+    chats[params.index]?.user1?._id == user._id
+      ? setOtherUserChatIndex(chats[params.index]?.user2Index)
+      : setOtherUserChatIndex(chats[params.index]?.user1Index);
   }, [socket, params.chatId]);
-
-  useEffect(() => {
-    if (socket == null) return;
-
-    const setEditedMessage = (message, index, chatIndex, type) => {
-      console.log({ message, index, chatIndex, type });
-      dispatch(editMessage({ type, chatIndex, message, index }));
-    };
-    socket.on("recive__editedMessage", setEditedMessage);
-
-    return () => socket.off("recive__editedMessage", setEditedMessage);
-  }, [socket]);
-
   //for typing effect
   useEffect(() => {
     if (socket == null) return;
@@ -163,17 +151,6 @@ function Chat() {
     });
 
     return () => socket.off("isNot__typing");
-  }, [socket]);
-
-  useEffect(() => {
-    if (socket == null) return;
-
-    const setReceivedMessage = (message) => {
-      dispatch(setMessage({ chatIndex: params.index, message }));
-    };
-    socket.on("recive__message", setReceivedMessage);
-
-    return () => socket.off("recive__message", setReceivedMessage);
   }, [socket]);
 
   const messageRef = useCallback((messageContainer) => {

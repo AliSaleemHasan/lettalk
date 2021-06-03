@@ -85,14 +85,17 @@ const request = {
     });
     return response.json();
   },
-  addChatToDB: async (user1, user2) => {
-    const response = await fetch(`/chats/user/${user1}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ user1, user2 }),
-    });
+  addChatToDB: async (user1, user2, user1Index, password) => {
+    const response = await fetch(
+      `/chats/user/${user1}?requestedUserID=${user2}&password=${password}&user1Index=${user1Index} `,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user1, user2 }),
+      }
+    );
     return response.json();
   },
 

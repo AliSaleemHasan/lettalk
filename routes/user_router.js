@@ -148,4 +148,11 @@ exports.setUserState = async (userID, status, lastseen) => {
   }
 };
 
+exports.checkChatPassword = async (userID, password) => {
+  let user = await User.findById(userID);
+  if (user) {
+    if (password === user.chatPassword) return true;
+  }
+  return false;
+};
 exports.userRouter = router;

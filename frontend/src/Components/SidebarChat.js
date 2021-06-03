@@ -9,85 +9,75 @@ import { useParams } from "react-router-dom";
 import { addChat, Selector as chatsSelector } from "../features/chatsSlice";
 import { LoadableAvatar } from "../loadable";
 const SidebarChat = React.memo(
-  ({
-    user2,
-    id,
-    name,
-    count,
-    image,
-    email,
-    type,
-    lastMessage,
-    isTyping,
-    index,
-  }) => {
+  ({ otherUser, id, count, type, lastMessage, isTyping, index }) => {
     const params = useParams();
     const history = useHistory();
     const [socket] = useSocket();
     const [error, setError] = useState("");
     const chats = useSelector(chatsSelector);
-    const user = useSelector(userSelector);
     const dispatch = useDispatch();
-    const gotoChat = (e) => {
-      // e.preventDefault();
-
-      // if (params.chatId === chats[params.index]?._id) {
-      //   history.push(`/chat/${id}/${index}`);
-      //   return;
-      // }
-
-      // requests
-      //   .getChat(id)
-      //   .then((data) => {
-      //     dispatch(setChat(data.chat));
-      //   })
-      //   .catch((err) => console.log(err));
-
+    const user = useSelector(userSelector);
+    const gotoChat = () => {
       history.push(`/chat/${id}/${index}`);
     };
 
     const addNewChat = async (e) => {
       e.preventDefault();
+
       if (!socket) {
         return;
       }
-      console.log("in add new chat funciton");
+
+      const otherUserChatPassword = prompt(
+        "please enter other user chat password"
+      );
+      if (!otherUserChatPassword) return;
+
       requests
-        .addChatToDB(user._id, user2)
+        .addChatToDB(
+          user._id,
+          otherUser._id,
+          chats?.length,
+          otherUserChatPassword
+        )
         .then((data) => {
           console.log(data);
           if (data.success) {
             let room = data.chat;
             room.user1 = user;
-
+            room.user2 = otherUser;
+            console.log(room);
             dispatch(addChat(room));
-            socket.emit("add__room", room, user2);
 
-            return history.push(`/chat/${data.chat._id}/${index}`);
+            socket.emit("addingChatWarning", otherUser._id, room);
+          } else {
+            setError(data.error);
           }
-          setError(data?.message);
         })
         .catch((err) => console.log(err));
     };
+
     return (
       <div
         className="sidebarChat"
         onClick={type !== "search" ? gotoChat : addNewChat}
       >
         <div className="sidebarChat__left">
-          <LoadableAvatar alt="user image" src={image}>
-            {!image && name && name[0]?.toUpperCase()}
+          <LoadableAvatar alt="user image" src={otherUser?.image}>
+            {!otherUser.image &&
+              otherUser?.username &&
+              otherUser?.username[0]?.toUpperCase()}
           </LoadableAvatar>
         </div>
         <div className="sidebarChat__right">
           <div className="sidebarChat__info">
-            <p className="sidebarChat__name">{name}</p>
+            <p className="sidebarChat__name">{otherUser.username}</p>
             {type !== "search" && count && (
               <p className="sidebarChat__count">{count}</p>
             )}
           </div>
           {type === "search" ? (
-            <p className="sidebarChat__lastmessage">{email}</p>
+            <p className="sidebarChat__lastmessage">{otherUser.email}</p>
           ) : (
             <p className="sidebarChat__lastmessage">
               {isTyping ? "Typing" : lastMessage?.message || lastMessage}

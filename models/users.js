@@ -15,6 +15,10 @@ const user = new Schema({
     default: "",
   },
 
+  chatPassword: {
+    type: String,
+    default: "0000",
+  },
   state: {
     lastseen: {
       type: Date,
