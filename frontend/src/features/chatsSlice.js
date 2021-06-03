@@ -16,7 +16,8 @@ const chatsSlice = createSlice({
       state.value.push(action.payload);
     },
     setMessage: (state, action) => {
-      console.log(action.payload.chatIndex);
+      console.log(action.payload);
+      console.log(state.value[action.payload.chatIndex]);
       state.value[action.payload.chatIndex].messages[
         state.value[action.payload.chatIndex].messages.length
       ] = action.payload.message;

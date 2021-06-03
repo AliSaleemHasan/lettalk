@@ -55,10 +55,21 @@ io.on("connection", (socket) => {
     socket.to(otherUserID).emit("accept__addRoom", chat);
   });
 
-  socket.on("message__editOrdelete", (otherUserID, message, index, type) => {
-    socket.in(otherUserID).emit("recive__editedMessage", message, index, type);
-    socket.emit("recive__editedMessage", message, index, type);
-  });
+  socket.on(
+    "message__editOrdelete",
+    (otherUserID, message, messageIndex, chatIndex, type) => {
+      socket
+        .in(otherUserID)
+        .emit("recive__editedMessage", message, messageIndex, chatIndex, type);
+      socket.emit(
+        "recive__editedMessage",
+        message,
+        messageIndex,
+        chatIndex,
+        type
+      );
+    }
+  );
 
   socket.on("disconnect", (reason) => {
     setUserState(id, false, Date.now());

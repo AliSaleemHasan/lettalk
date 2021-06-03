@@ -10,10 +10,10 @@ import { useHistory } from "react-router-dom";
 import Picker from "emoji-picker-react";
 import { useParams } from "react-router-dom";
 import {
+  editMessage,
+  Selector as chatsSelector,
   setMessage,
-  setChat,
-  Selector as chatSelector,
-} from "../features/chatSlice";
+} from "../features/chatsSlice";
 import { Selector as userSelector } from "../features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import requests from "../handleRequests.js";
@@ -28,7 +28,7 @@ function Chat() {
   const input = useRef();
   const [toggleEmoji, setToggleEmoji] = useState(false);
   const user = useSelector(userSelector);
-  const chat = useSelector(chatSelector);
+  const chats = useSelector(chatsSelector);
   const [messages, setMessages] = useState([]);
   const dispatch = useDispatch();
   const params = useParams();
@@ -46,7 +46,7 @@ function Chat() {
 
   const gotoInfo = (e) => {
     e.preventDefault();
-    history.push(`/chat/${chat._id}/${params.index}/info`);
+    history.push(`/chat/${chats[params.index]?._id}/${params.index}/info`);
   };
 
   const sendMessage = (e) => {
@@ -77,20 +77,25 @@ function Chat() {
       : socket.emit("not__typing", otherUserID);
   };
 
-  const editMessage = (e) => {
+  const editChatMessage = (e) => {
     e.preventDefault();
     const editedMessage = prompt(
       "change the message",
       messageToChange.message?.message
     );
     requests
-      .editORdeleteMessage(chat._id, messageToChange.message._id, editedMessage)
+      .editORdeleteMessage(
+        chats[params.index]?._id,
+        messageToChange.message._id,
+        editedMessage
+      )
       .then((data) =>
         socket.emit(
           "message__editOrdelete",
           otherUserID,
           data.message,
           messageToChange.index,
+          params.index,
           "edit"
         )
       )
@@ -102,13 +107,17 @@ function Chat() {
   const deleteMessage = (e) => {
     e.preventDefault();
     requests
-      .editORdeleteMessage(chat._id, messageToChange.message._id)
+      .editORdeleteMessage(
+        chats[params.index]?._id,
+        messageToChange.message._id
+      )
       .then((data) =>
         socket.emit(
           "message__editOrdelete",
           otherUserID,
           data.message,
           messageToChange.index,
+          params.index,
           "delete"
         )
       )
@@ -118,40 +127,24 @@ function Chat() {
   };
   //get chat if it is null in redux and save messages in messages state
   useEffect(() => {
-    if (!socket || (!user && !chat)) return;
+    if (!socket || (!user && !chats[params.index])) return;
 
-    requests
-      .getMessages(params.chatId)
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
-    requests
-      .getChat(params.chatId)
-      .then((data) => {
-        dispatch(setChat(data.chat));
-
-        data?.chat.user1?._id == user._id
-          ? setOtherUserID(data?.chat.user2?._id)
-          : setOtherUserID(data?.chat.user1?._id);
-        setMessages(data.chat.messages);
-      })
-      .catch((err) => console.log(err));
-
-    socket.emit("join__room", params.chatId);
+    chats[params.index]?.user1?._id == user._id
+      ? setOtherUserID(chats[params.index]?.user2?._id)
+      : setOtherUserID(chats[params.index]?.user1?._id);
   }, [socket, params.chatId]);
 
   useEffect(() => {
     if (socket == null) return;
 
-    const setEditedMessage = (message, index, type) => {
-      let messagesCp = [...messages];
-      if (type === "edit") messagesCp.splice(index, 1, message);
-      else messagesCp.splice(index, 1);
-      setMessages(messagesCp);
+    const setEditedMessage = (message, index, chatIndex, type) => {
+      console.log({ message, index, chatIndex, type });
+      dispatch(editMessage({ type, chatIndex, message, index }));
     };
     socket.on("recive__editedMessage", setEditedMessage);
 
     return () => socket.off("recive__editedMessage", setEditedMessage);
-  }, [socket, messages]);
+  }, [socket]);
 
   //for typing effect
   useEffect(() => {
@@ -176,13 +169,12 @@ function Chat() {
     if (socket == null) return;
 
     const setReceivedMessage = (message) => {
-      dispatch(setMessage({ index: messages.length, message }));
-      setMessages([...messages, message]);
+      dispatch(setMessage({ chatIndex: params.index, message }));
     };
     socket.on("recive__message", setReceivedMessage);
 
     return () => socket.off("recive__message", setReceivedMessage);
-  }, [socket, messages]);
+  }, [socket]);
 
   const messageRef = useCallback((messageContainer) => {
     if (messageContainer) {
@@ -200,9 +192,9 @@ function Chat() {
             </IconButton>
           </div>
           <p className="chat__headerName" onClick={gotoInfo}>
-            {chat?.user1?._id === user._id
-              ? chat?.user2?.username
-              : chat?.user1?.username}
+            {chats[params.index]?.user1?._id === user._id
+              ? chats[params.index]?.user2?.username
+              : chats[params.index]?.user1?.username}
           </p>
           <div className="chat__headerStatus">
             {/* <p className="chat__status"></p> */}
@@ -216,7 +208,7 @@ function Chat() {
         <div className="header__right">
           {messageToChange.message && (
             <div className="message__edit">
-              <IconButton onClick={editMessage} color="primary">
+              <IconButton onClick={editChatMessage} color="primary">
                 <Edit />
               </IconButton>
 
@@ -231,7 +223,7 @@ function Chat() {
         </div>
       </div>
       <div className="chat__body">
-        {messages?.map((message, index) => (
+        {chats[params.index]?.messages?.map((message, index) => (
           <div
             onClick={() => {
               if (message.sender !== user._id) return;
@@ -247,14 +239,14 @@ function Chat() {
               content={message.message}
               is_sender={message.sender === user._id}
               username={
-                message.sender == chat?.user1._id
-                  ? chat?.user1?.username
-                  : chat?.user2?.username
+                message.sender == chats[params.index]?.user1._id
+                  ? chats[params.index]?.user1?.username
+                  : chats[params.index]?.user2?.username
               }
               image={
-                message.sender == chat?.user1._id
-                  ? chat?.user1?.image
-                  : chat?.user2?.image
+                message.sender == chats[params.index]?.user1._id
+                  ? chats[params.index]?.user1?.image
+                  : chats[params.index]?.user2?.image
               }
             />
           </div>
