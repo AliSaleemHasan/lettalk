@@ -57,7 +57,7 @@ function Login() {
   return (
     <div className="login">
       <div className="login__header">
-        <img src="/defaults/Chaty.png" width="75" height="75" alt="logo" />
+        <img src="/defaults/chaty.png" width="75" height="40" alt="logo" />
       </div>
       <div className="login__container">
         <h1 className="login__containerTitle">

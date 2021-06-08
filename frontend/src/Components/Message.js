@@ -7,9 +7,9 @@ const Message = React.memo(({ content, timestamp, is_sender, image, type }) => {
       <div className="message__left">
         <LoadableAvatar
           alt="user image"
-          src={image ? image : "/defaults/Chaty.png"}
-          width="75"
-          height="75"
+          src={image ? image : "/defaults/chaty.png"}
+          width="30"
+          height="30"
         ></LoadableAvatar>
       </div>
       <div className="message__right">

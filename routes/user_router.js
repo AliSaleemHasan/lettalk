@@ -101,7 +101,6 @@ router.put("/info/:id", authenticate.verifyJwt, (req, res, next) => {
       { new: true }
     );
   } else if (req.query.chat__password) {
-    console.log("fuck");
     newInfo = User.findByIdAndUpdate(
       req.params.id,
       {
