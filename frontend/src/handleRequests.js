@@ -37,6 +37,7 @@ const request = {
   },
 
   editUserInfo: async (id, settingName, name, updatedInfo) => {
+    console.log(name);
     const response = await fetch(`/users/info/${id}?${settingName}=${name}`, {
       method: "PUT",
       headers: {

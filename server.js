@@ -5,19 +5,25 @@ const passport = require("passport");
 const socket = require("socket.io");
 const cookieParesr = require("cookie-parser");
 const compression = require("compression");
+const mongoose = require("mongoose");
 const port = process.env.PORT || 8080;
 //mongoose connection;
 
 const path = require("path");
 //routes
-const {
-  userRouter,
-  setUserState,
-  checkChatPassword,
-} = require("./routes/user_router");
+const { userRouter } = require("./routes/user_router");
 const authRouter = require("./routes/auth_router");
 const chatRouter = require("./routes/chat_router");
 const frontRouter = require("./routes/frontendrouter");
+
+let connect = mongoose
+  .connect(process.env.MONGO_URL || "mongodb://localhost:27017/chatApp", {
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useNewUrlParser: true,
+  })
+  .then((db) => console.log("connected correctly to db"))
+  .catch((err) => console.log(err));
 
 const app = express();
 app.use(compression());
@@ -39,8 +45,6 @@ app.use(express.urlencoded({ extended: true }));
 io.on("connection", (socket) => {
   const id = socket.handshake.query.id;
   socket.join(id);
-
-  setUserState(id, true);
 
   socket.on("send__message", (otherUserID, message, index) => {
     socket.in(otherUserID).emit("recive__message", message, index);
@@ -70,10 +74,6 @@ io.on("connection", (socket) => {
         .emit("recive__editedMessage", message, messageIndex, chatIndex, type);
     }
   );
-
-  socket.on("disconnect", (reason) => {
-    setUserState(id, false, Date.now());
-  });
 });
 
 if (process.env.NODE_ENV === "production") {

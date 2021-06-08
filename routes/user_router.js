@@ -2,9 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/users");
-const fs = require("fs");
 const authenticate = require("../authenticate");
-const { uploadStorge } = require("../mongoInit.js");
 router.use(express.json());
 
 router.get("/", authenticate.verifyJwt, (req, res) => {
@@ -94,11 +92,20 @@ router.put("/info/:id", authenticate.verifyJwt, (req, res, next) => {
       },
       { new: true }
     );
-  } else {
+  } else if (req.query.bio) {
     newInfo = User.findByIdAndUpdate(
       req.params.id,
       {
         $set: { bio: req.body.info },
+      },
+      { new: true }
+    );
+  } else if (req.query.chat__password) {
+    console.log("fuck");
+    newInfo = User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: { chatPassword: req.body.info },
       },
       { new: true }
     );
@@ -136,17 +143,17 @@ router.post("/search", authenticate.verifyJwt, (req, res, next) => {
 });
 
 //set user state (online or offline)
-exports.setUserState = async (userID, status, lastseen) => {
-  let user = await User.findById(userID);
-  if (user) {
-    let newState = user.state;
-    newState.status = status;
-    if (lastseen) newState.lastseen = lastseen;
-    await user.save();
+// exports.setUserState = async (userID, status, lastseen) => {
+//   let user = await User.findById(userID);
+//   if (user) {
+//     let newState = user.state;
+//     newState.status = status;
+//     if (lastseen) newState.lastseen = lastseen;
+//     await user.save();
 
-    return user;
-  }
-};
+//     return user;
+//   }
+// };
 
 exports.checkChatPassword = async (userID, password) => {
   let user = await User.findById(userID);

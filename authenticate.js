@@ -3,7 +3,6 @@ const githubStrategy = require("passport-github2").Strategy;
 const google_straregy = require("passport-google-oauth2").Strategy;
 const User = require("./models/users");
 const jwt = require("jsonwebtoken");
-const secret = "aoweifnowaiefnowaiefnwafeA WEFWAIPEFNWAE";
 
 //serialize and deserialize user into session
 passport.serializeUser(function (user, done) {
@@ -19,7 +18,7 @@ exports.deserialize = passport.deserializeUser(function (id, done) {
 //get jwt
 
 exports.getToken = (payload) => {
-  return jwt.sign(payload, secret, { expiresIn: "5d" });
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "5d" });
 };
 
 //verify user middleware using cookies and jwt
@@ -27,7 +26,7 @@ exports.getToken = (payload) => {
 exports.verifyJwt = (req, res, next) => {
   const token = req.cookies && req.cookies.UTOF;
   if (token) {
-    jwt.verify(token, secret, (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
       if (err) return res.status(401).json({ error: "user not found!" });
       req.user = user.id;
       next();

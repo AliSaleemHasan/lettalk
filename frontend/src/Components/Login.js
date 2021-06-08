@@ -72,6 +72,9 @@ function Login() {
               <br /> support chats between two users and multible users through
               Groups.
             </p>
+            <p>
+              Every user have by default chat password of: <span>0000</span>
+            </p>
             <h2>Sign in with:</h2>
             <button onClick={() => setloginMethod(1)}>Gmail or Github</button>
             <button onClick={() => setloginMethod(2)}>

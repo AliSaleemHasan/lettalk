@@ -8,6 +8,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { Info as Inf } from "@material-ui/icons";
 import Email from "@material-ui/icons/Email";
 import requests from "../handleRequests";
+import Security from "@material-ui/icons/Security";
 import { LoadableAppSetting, LoadableAvatar } from "../loadable";
 const Settings = React.memo(({ setToggleSettings }) => {
   const user = useSelector(Selector);
@@ -68,6 +69,12 @@ const Settings = React.memo(({ setToggleSettings }) => {
           settingName="username"
         />
         <LoadableAppSetting name={user.bio} Icon={Inf} settingName="bio" />
+        <LoadableAppSetting
+          name={user.chatPassword}
+          Icon={Security}
+          settingName="chat__password"
+          type="email"
+        />
         <LoadableAppSetting
           type="email"
           Icon={Email}
