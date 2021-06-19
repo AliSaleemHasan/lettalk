@@ -9,7 +9,8 @@ import { Info as Inf } from "@material-ui/icons";
 import Email from "@material-ui/icons/Email";
 import requests from "../handleRequests";
 import Security from "@material-ui/icons/Security";
-import { LoadableAppSetting, LoadableAvatar } from "../loadable";
+import Avatar from "@material-ui/core/Avatar";
+import { LoadableAppSetting } from "../loadable";
 const Settings = React.memo(({ setToggleSettings }) => {
   const user = useSelector(Selector);
   const [showInput, setshowInput] = useState(false);
@@ -40,12 +41,9 @@ const Settings = React.memo(({ setToggleSettings }) => {
 
       <div className="settings__setImage">
         <form className="settings__image">
-          <LoadableAvatar
-            src={user?.image}
-            onClick={() => setshowInput(!showInput)}
-          >
+          <Avatar src={user?.image} onClick={() => setshowInput(!showInput)}>
             {!user.image && user.username[0]}
-          </LoadableAvatar>
+          </Avatar>
 
           {showInput && (
             <div className="settings__afterUpbload">

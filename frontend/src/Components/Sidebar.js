@@ -17,8 +17,8 @@ import {
   setChats,
   Selector as chatsSelector,
 } from "../features/chatsSlice";
-
-import { LoadableAvatar, LoadableSetting } from "../loadable";
+import Avatar from "@material-ui/core/Avatar";
+import { LoadableSetting } from "../loadable";
 function Sidebar() {
   const [socket] = useSocket();
   const user = useSelector(userSelector);
@@ -100,9 +100,9 @@ function Sidebar() {
     <div className="sidebar">
       <div className="sidebar__left">
         <div className="sidebar__leftAvatar">
-          <LoadableAvatar src={user?.image}>
+          <Avatar src={user?.image}>
             {!user?.image && user?.username[0]?.toUpperCase()}
-          </LoadableAvatar>
+          </Avatar>
         </div>
         <div className="sidebar__leftIcons">
           <IconButton aria-label="chats-button">

@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSocket } from "../SocketProvider.js";
 import { useParams } from "react-router-dom";
 import { addChat, Selector as chatsSelector } from "../features/chatsSlice";
-import { LoadableAvatar } from "../loadable";
+import Avatar from "@material-ui/core/Avatar";
 const SidebarChat = React.memo(
   ({ otherUser, id, count, type, lastMessage, isTyping, index }) => {
     const params = useParams();
@@ -63,11 +63,11 @@ const SidebarChat = React.memo(
         onClick={type !== "search" ? gotoChat : addNewChat}
       >
         <div className="sidebarChat__left">
-          <LoadableAvatar alt="user image" src={otherUser?.image}>
+          <Avatar alt="user image" src={otherUser?.image}>
             {!otherUser.image &&
               otherUser?.username &&
               otherUser?.username[0]?.toUpperCase()}
-          </LoadableAvatar>
+          </Avatar>
         </div>
         <div className="sidebarChat__right">
           <div className="sidebarChat__info">

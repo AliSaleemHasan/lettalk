@@ -9,7 +9,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { Selector as userSelector } from "../features/userSlice";
 import { Selector as chatsSelector } from "../features/chatsSlice";
 import { useSelector } from "react-redux";
-import { LoadableAvatar } from "../loadable";
+import Avatar from "@material-ui/core/Avatar";
 function Info() {
   const history = useHistory();
   const params = useParams();
@@ -33,7 +33,7 @@ function Info() {
         <h3>{otherUser?.username}'s Info</h3>
       </div>
       <div className="info__middle">
-        <LoadableAvatar src={otherUser?.image} />
+        <Avatar src={otherUser?.image} />
       </div>
 
       <div className="info__bottom">

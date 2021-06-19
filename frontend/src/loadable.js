@@ -23,12 +23,6 @@ const Loading = ({ error, timeOut, retry }) => {
     );
 };
 
-export const LoadableAvatar = loadable({
-  loader: () => import("@material-ui/core/Avatar"),
-  loading: Loading,
-  timeout: 10000,
-});
-
 export const LoadableLogin = loadable({
   loader: () => import(/* webpackChunkName: "Login" */ "./Components/Login"),
   loading: Loading,

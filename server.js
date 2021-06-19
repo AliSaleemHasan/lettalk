@@ -17,7 +17,7 @@ const chatRouter = require("./routes/chat_router");
 const frontRouter = require("./routes/frontendrouter");
 
 let connect = mongoose
-  .connect(process.env.MONGO_URL || "mongodb://localhost:27017/chatApp", {
+  .connect("mongodb://localhost:27017/chatApp", {
     useUnifiedTopology: true,
     useCreateIndex: true,
     useNewUrlParser: true,
