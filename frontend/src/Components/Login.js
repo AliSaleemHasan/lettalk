@@ -43,11 +43,11 @@ function Login() {
 
   const github = (e) => {
     e.preventDefault();
-    window.open("http://localhost:8080/auth/github", "_self");
+    window.open("https://cchaty-app.herokuapp.com/auth/github", "_self");
   };
   const google = (e) => {
     e.preventDefault();
-    window.open("http://localhost:8080/auth/google", "_self");
+    window.open("https://cchaty-app.herokuapp.com/auth/google", "_self");
   };
 
   const gotoSignup = (e) => {
